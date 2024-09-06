@@ -54,6 +54,8 @@ const VulnSourceGitHubAdvisories = () =>
   import('@/views/administration/vuln-sources/VulnSourceGitHubAdvisories');
 const VulnSourceOSVAdvisories = () =>
   import('@/views/administration/vuln-sources/VulnSourceOSVAdvisories');
+const VulnSourceCSAF = () =>
+  import('@/views/administration/vuln-sources/VulnSourceCSAF');
 
 const Cargo = () => import('@/views/administration/repositories/Cargo');
 const Composer = () => import('@/views/administration/repositories/Composer');
@@ -487,6 +489,16 @@ function configRoutes() {
             {
               path: 'vulnerabilitySources/osv',
               component: VulnSourceOSVAdvisories,
+              meta: {
+                title: i18n.t('message.administration'),
+                i18n: 'message.administration',
+                sectionPath: '/admin',
+                permission: 'SYSTEM_CONFIGURATION',
+              },
+            },
+            {
+              path: 'vulnerabilitySources/csaf',
+              component: VulnSourceCSAF,
               meta: {
                 title: i18n.t('message.administration'),
                 i18n: 'message.administration',

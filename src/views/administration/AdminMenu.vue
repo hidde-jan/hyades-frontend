@@ -174,6 +174,11 @@ export default {
               name: this.$t('admin.osv_advisories'),
               route: 'vulnerabilitySources/osv',
             },
+            {
+              component: 'VulnSourceCSAF',
+              name: this.$t('admin.csaf_advisories'),
+              route: 'vulnerabilitySources/csaf',
+            },
           ],
         },
         {
