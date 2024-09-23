@@ -1,8 +1,11 @@
 <template>
   <b-card no-body :header="header">
     <b-card-body>
+
+
       <!--TODO: Include logo file-->
       <img alt="CSAF logo" src="https://oasis-open.github.io/csaf-documentation/assets/images/screen-shot-2022-11-28-at-10.16.00-pm-279x97.png" width="65" />
+      
       <hr />
       <c-switch
         color="primary"
@@ -13,7 +16,36 @@
         :disabled="enabledEcosystems.length === 0"
       />
       {{ $t('admin.vulnsource_csaf_advisories_enable') }}
-      <hr />
+      <hr />      
+      <div>
+        <b-card no-body>
+          <b-tabs pills card>
+            <b-tab title="CSAF Sources" active>
+              <!--<b-card no-body :header="header">-->
+              <b-card-body>
+                <div id="repositoryToolbar" class="bs-table-custom-toolbar">
+                  <b-button size="md" variant="outline-primary" v-b-modal.repositoryCreateRepositoryModal>
+                    <span class="fa fa-plus"></span> {{ $t('admin.create_repository') }}
+                  </b-button>
+                </div>
+                <bootstrap-table
+                  ref="table"
+                  :columns="columns"
+                  :data="data"
+                  :options="options"
+                >
+                </bootstrap-table>
+              </b-card-body>
+                <!--<repository-create-repository-modal
+                  :type="type"
+                  v-on:refreshTable="refreshTable"
+                />-->
+              <!--</b-card>-->
+            </b-tab>
+            <b-tab title="CSAF Documents"><b-card-text>List of retrieved csaf documents</b-card-text></b-tab>
+          </b-tabs>
+        </b-card>
+      </div>
       <b-validated-input-group-form-input
         id="csaf-feeds-url"
         :label="$t('admin.vulnsource_csaf_base_url')"
@@ -23,6 +55,7 @@
         v-model="csafBaseUrl"
         lazy="true"
       />
+      
       <hr />
       <b-form-group label="Ecosystems">
         <div class="list-group" style="width: 40%">
