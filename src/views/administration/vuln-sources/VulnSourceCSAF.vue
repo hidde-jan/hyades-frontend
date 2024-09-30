@@ -5,7 +5,7 @@
 
       <!--TODO: Include logo file-->
       <img alt="CSAF logo" src="https://oasis-open.github.io/csaf-documentation/assets/images/screen-shot-2022-11-28-at-10.16.00-pm-279x97.png" width="65" />
-      
+
       <hr />
       <c-switch
         color="primary"
@@ -16,7 +16,7 @@
         :disabled="enabledEcosystems.length === 0"
       />
       {{ $t('admin.vulnsource_csaf_advisories_enable') }}
-      <hr />      
+      <hr />
       <div>
         <b-card no-body>
           <b-tabs pills card>
@@ -24,16 +24,25 @@
               <!--<b-card no-body :header="header">-->
               <b-card-body>
                 <div id="repositoryToolbar" class="bs-table-custom-toolbar">
-                  <b-button size="md" variant="outline-primary" v-b-modal.repositoryCreateRepositoryModal>
-                    <span class="fa fa-plus"></span> {{ $t('admin.create_repository') }}
+                  <b-button size="md" variant="outline-primary" v-b-modal.vulnSourceCSAFAddModal>
+                    <span class="fa fa-plus"></span> {{ $t('admin.add_source') }}
                   </b-button>
                 </div>
+                <p> {{ $t('admin.csaf_sources') }}:</p>
                 <bootstrap-table
-                  ref="table"
+                  ref="table_sources"
                   :columns="columns"
                   :data="data"
                   :options="options"
                 >
+                </bootstrap-table>
+                <p> {{ $t('admin.suggested_discovery_sources') }}:</p>
+                <bootstrap-table
+                  ref="table_suggested"
+                  :columns="columns"
+                  :data="data"
+                  :options="options"
+                  >
                 </bootstrap-table>
               </b-card-body>
                 <!--<repository-create-repository-modal
@@ -42,7 +51,24 @@
                 />-->
               <!--</b-card>-->
             </b-tab>
-            <b-tab title="CSAF Documents"><b-card-text>List of retrieved csaf documents</b-card-text></b-tab>
+            <b-tab title="CSAF Documents">
+              <b-card-body>
+                <p> {{ $t('admin.csaf_documents') }}:</p>
+                <b-button size="md" variant="outline-primary" v-b-modal.documentsCompare>
+                  <span class="fa fa-file"></span> {{ $t('admin.compare_selected') }}
+                </b-button>
+                <b-button size="md" variant="outline-primary" v-b-modal.documentsEdit>
+                  <span class="fa fa-edit"></span> {{ $t('admin.edit_selected') }}
+                </b-button>
+                <bootstrap-table
+                  ref="table_documents"
+                  :columns="columns"
+                  :data="data"
+                  :options="options"
+                >
+                </bootstrap-table>
+              </b-card-body>
+            </b-tab>
           </b-tabs>
         </b-card>
       </div>
@@ -55,7 +81,7 @@
         v-model="csafBaseUrl"
         lazy="true"
       />
-      
+
       <hr />
       <b-form-group label="Ecosystems">
         <div class="list-group" style="width: 40%">
