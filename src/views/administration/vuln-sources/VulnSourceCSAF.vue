@@ -35,7 +35,7 @@
                     {{ $t('admin.add_source') }}
                   </b-button>
                 </div>
-                <p>{{ $t('admin.csaf_sources') }}:</p>
+                <!--<p>{{ $t('admin.csaf_sources') }}:</p>-->
                 <bootstrap-table
                   ref="table_sources"
                   :columns="sampleSrcColumns"
@@ -127,6 +127,7 @@
       </b-button>
     </b-card-footer>
     <ecosystem-modal v-on:selection="updateEcosystem" />
+    <vuln-source-c-s-a-f-add />
   </b-card>
 </template>
 <script>
@@ -134,6 +135,7 @@ import { Switch as cSwitch } from '@coreui/vue';
 import common from '../../../shared/common';
 import configPropertyMixin from '../mixins/configPropertyMixin';
 import EcosystemModal from './EcosystemModal';
+import VulnSourceCSAFAdd from './VulnSourceCSAFAdd.vue'
 import ActionableListGroupItem from '../../components/ActionableListGroupItem.vue';
 import BValidatedInputGroupFormInput from '../../../forms/BValidatedInputGroupFormInput';
 
@@ -145,6 +147,7 @@ export default {
   components: {
     cSwitch,
     EcosystemModal,
+    VulnSourceCSAFAdd,
     ActionableListGroupItem,
     BValidatedInputGroupFormInput,
   },
@@ -169,13 +172,13 @@ export default {
           
         },
         {
-          title: 'URL',
+          title: 'Name',
           field: 'name',
           sortable: true,
           
         },
         {
-          title: 'Internal',
+          title: 'URL',
           field: 'url',
           class: 'tight',
           sortable: true,
