@@ -7,7 +7,6 @@
     no-stacking
     :title="$t('admin.add_source')"
   >
-  
 
     <b-validated-input-group-form-input
       id="identifier"
@@ -24,7 +23,7 @@
       type="url"
       v-model="url"
     />
-    
+
     <div>
       <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{
         $t('admin.internal')
@@ -64,12 +63,6 @@
     </div>
 
     <hr>
-
-    
-    <b-button size="md" variant="primary" @click="upload()">
-        Upload a file
-    </b-button>
-
 
     <template v-slot:modal-footer="{ cancel }">
       <b-button size="md" variant="secondary" @click="cancel()">{{

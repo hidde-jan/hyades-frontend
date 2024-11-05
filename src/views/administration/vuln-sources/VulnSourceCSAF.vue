@@ -34,8 +34,16 @@
                     <span class="fa fa-plus"></span>
                     {{ $t('admin.add_source') }}
                   </b-button>
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    v-b-modal.vulnSourceCSAFUpload
+                  >
+                    <span class="fa fa-upload"></span>
+                    {{ $t('admin.upload_file') }}
+                  </b-button>
                 </div>
-                <!--<p>{{ $t('admin.csaf_sources') }}:</p>-->
+                <h3>{{ $t('admin.csaf_sources') }}:</h3>
                 <bootstrap-table
                   ref="table_sources"
                   :columns="sampleSrcColumns"
@@ -43,12 +51,12 @@
                   :options="sampleSrcOpts"
                 >
                 </bootstrap-table>
-                <p>{{ $t('admin.suggested_discovery_sources') }}:</p>
+                <h3>{{ $t('admin.suggested_discovery_sources') }}:</h3>
                 <bootstrap-table
                   ref="table_suggested"
-                  :columns="columns"
-                  :data="data"
-                  :options="options"
+                  :columns="sampleRecColumns"
+                  :data="sampleRecData"
+                  :options="sampleRecOpts"
                 >
                 </bootstrap-table>
               </b-card-body>
@@ -60,28 +68,22 @@
             </b-tab>
             <b-tab title="CSAF Documents">
               <b-card-body>
-                <p>{{ $t('admin.csaf_documents') }}:</p>
+                <h2>{{ $t('admin.csaf_documents') }}:</h2>
                 <b-button
                   size="md"
                   variant="outline-primary"
-                  v-b-modal.documentsCompare
+                  @click="openCompare"
                 >
                   <span class="fa fa-file"></span>
                   {{ $t('admin.compare_selected') }}
                 </b-button>
-                <b-button
-                  size="md"
-                  variant="outline-primary"
-                  v-b-modal.documentsEdit
-                >
-                  <span class="fa fa-edit"></span>
-                  {{ $t('admin.edit_selected') }}
-                </b-button>
                 <bootstrap-table
                   ref="table_documents"
-                  :columns="columns"
-                  :data="data"
-                  :options="options"
+                  :columns="sampleDocColumns"
+                  :data="sampleDocData"
+                  :options="sampleDocOpts"
+                  data-click-to-select="true"
+                  @check-change="onCheckChange"
                 >
                 </bootstrap-table>
               </b-card-body>
@@ -128,6 +130,8 @@
     </b-card-footer>
     <ecosystem-modal v-on:selection="updateEcosystem" />
     <vuln-source-c-s-a-f-add />
+    <vuln-source-c-s-a-f-compare />
+    <vuln-source-c-s-a-f-upload />
   </b-card>
 </template>
 <script>
@@ -136,6 +140,8 @@ import common from '../../../shared/common';
 import configPropertyMixin from '../mixins/configPropertyMixin';
 import EcosystemModal from './EcosystemModal';
 import VulnSourceCSAFAdd from './VulnSourceCSAFAdd.vue'
+import VulnSourceCSAFCompare from './VulnSourceCSAFCompare.vue'
+import VulnSourceCSAFUpload from './VulnSourceCSAFUpload.vue'
 import ActionableListGroupItem from '../../components/ActionableListGroupItem.vue';
 import BValidatedInputGroupFormInput from '../../../forms/BValidatedInputGroupFormInput';
 
@@ -148,6 +154,8 @@ export default {
     cSwitch,
     EcosystemModal,
     VulnSourceCSAFAdd,
+    VulnSourceCSAFCompare,
+    VulnSourceCSAFUpload,
     ActionableListGroupItem,
     BValidatedInputGroupFormInput,
   },
@@ -164,25 +172,26 @@ export default {
         dataOn: '\u2713',
         dataOff: '\u2715',
       },
+      // Sample Data for CSAF Sources:
       sampleSrcColumns: [
         {
-          title: 'ID', //this.$t('admin.identifier'),
+          title: 'ID',
           field: 'id',
           sortable: true,
-          
+
         },
         {
           title: 'Name',
           field: 'name',
           sortable: true,
-          
+
         },
         {
           title: 'URL',
           field: 'url',
           class: 'tight',
           sortable: true,
-          
+
         },
       ],
       sampleSrcData: [
@@ -195,6 +204,96 @@ export default {
         showColumns: true,
         showRefresh: true,
       },
+      // Sample Data for recommended sources
+      sampleRecColumns: [
+        {
+          title: 'ID', //this.$t('admin.identifier'),
+          field: 'id',
+          sortable: true,
+
+        },
+        {
+          title: 'Name',
+          field: 'name',
+          sortable: true,
+
+        },
+        {
+          title: 'URL',
+          field: 'url',
+          class: 'tight',
+          sortable: true,
+
+        },
+        {
+          title: 'New',
+          field: 'new',
+          class: 'tight',
+          sortable: true,
+
+        },
+        {
+          title: 'Actions',
+          field: 'actions',
+          formatter: (value, row) => {
+            return `<button class="btn btn-primary" onclick="handleAdd(${row.id})" >  <span class="fa fa-plus"></span> Add</button>`;
+          },
+        },
+      ],
+      sampleRecData: [
+        { id: 1, name: 'Example service 2', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json', new: 'New'},
+        { id: 2, name: 'Example service 3', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json'},
+      ],
+      sampleRecOpts: {
+        search: true,
+        showColumns: true,
+        showRefresh: true,
+      },
+      // Sample Data for CASF Documents
+      sampleDocColumns: [
+        {
+          title: 'Select',
+          field: 'select',
+          checkbox: true,
+        },
+        {
+          title: 'ID', //this.$t('admin.identifier'),
+          field: 'id',
+          sortable: true,
+
+        },
+        {
+          title: 'Vendor',
+          field: 'vendor',
+          sortable: true,
+
+        },
+        {
+          title: 'Version',
+          field: 'version',
+          class: 'tight',
+          sortable: true,
+
+        },
+        {
+          title: 'Last updated',
+          field: 'last_updated',
+          class: 'tight',
+          sortable: true,
+
+        },
+      ],
+      sampleDocData: [
+        { id: 1, vendor: 'Vendor 1', version: '1.0', last_updated: '12-07-24'},
+        { id: 2, vendor: 'Vendor 2', version: '1.3', last_updated: '06-03-24'},
+      ],
+      sampleDocOpts: {
+        search: true,
+        showColumns: true,
+        showRefresh: true,
+
+      },
+      selectedRows: [],
     };
   },
   watch: {
@@ -212,6 +311,23 @@ export default {
     },
   },
   methods: {
+    handleAdd(id) {
+      const row = this.sampleRecData.find(item => item.id === id);
+      console.log('Row added:', row);
+      // TODO: Add to sources
+    },
+    onCheckChange(selected){
+      this.selectedRows = selected;
+      console.log("selected");
+      console.log(this.selectedRows);
+    },
+    openCompare() {
+      if (this.selectedRows.length !== 2) {  //debugging, should be "==="
+        this.$bvModal.show('vulnSourceCSAFCompareModal');
+      } else {
+        alert(this.$t('admin.please_select_two_rows'));
+      }
+    },
     removeEcosystem: function (ecosystem) {
       this.enabledEcosystems = this.enabledEcosystems.filter(
         (e) => e !== ecosystem,
