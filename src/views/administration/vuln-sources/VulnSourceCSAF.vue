@@ -38,9 +38,9 @@
                 <!--<p>{{ $t('admin.csaf_sources') }}:</p>-->
                 <bootstrap-table
                   ref="table_sources"
-                  :columns="sampleSrcColumns"
-                  :data="sampleSrcData"
-                  :options="sampleSrcOpts"
+                  :columns="srcCols"
+                  :data="srcData"
+                  :options="srcOpts"
                 >
                 </bootstrap-table>
                 <p>{{ $t('admin.suggested_discovery_sources') }}:</p>
@@ -51,6 +51,8 @@
                   :options="options"
                 >
                 </bootstrap-table>
+                <hr>
+                
               </b-card-body>
               <!--<repository-create-repository-modal
                   :type="type"
@@ -89,42 +91,9 @@
           </b-tabs>
         </b-card>
       </div>
-      <!--<b-validated-input-group-form-input
-        id="csaf-feeds-url"
-        :label="$t('admin.vulnsource_csaf_base_url')"
-        input-group-size="mb-3"
-        rules="required"
-        type="text"
-        v-model="csafBaseUrl"
-        lazy="true"
-      />-->
-
-      <hr />
-      <b-form-group label="Ecosystems">
-        <div class="list-group" style="width: 40%">
-          <span v-for="ecosystem in enabledEcosystems" :key="ecosystem">
-            <actionable-list-group-item
-              :value="ecosystem"
-              :delete-icon="true"
-              @actionClicked="removeEcosystem(ecosystem)"
-            />
-          </span>
-          <actionable-list-group-item
-            :add-icon="true"
-            @actionClicked="$root.$emit('bv::show::modal', 'ecosystemModal')"
-          />
-        </div>
-      </b-form-group>
     </b-card-body>
     <b-card-footer>
-      <b-button
-        :disabled="this.vulnsourceEnabled && !this.csafBaseUrl"
-        variant="outline-primary"
-        class="px-4"
-        @click="saveUrl"
-      >
-        {{ $t('message.update') }}
-      </b-button>
+      
     </b-card-footer>
     <ecosystem-modal v-on:selection="updateEcosystem" />
     <vuln-source-c-s-a-f-add />
@@ -135,7 +104,7 @@ import { Switch as cSwitch } from '@coreui/vue';
 import common from '../../../shared/common';
 import configPropertyMixin from '../mixins/configPropertyMixin';
 import EcosystemModal from './EcosystemModal';
-import VulnSourceCSAFAdd from './VulnSourceCSAFAdd.vue'
+import VulnSourceCSAFAdd from './VulnSourceCSAFAddModal.vue';
 import ActionableListGroupItem from '../../components/ActionableListGroupItem.vue';
 import BValidatedInputGroupFormInput from '../../../forms/BValidatedInputGroupFormInput';
 
@@ -155,7 +124,7 @@ export default {
     return {
       vulnsourceEnabled: false,
       aliasSyncEnabled: false,
-      aliasGitHubIssueUrl: 'https://github.com/google/osv.dev/issues/888',
+      //aliasGitHubIssueUrl: 'https://github.com/google/osv.dev/issues/888',
       csafBaseUrl:
         'https://wid.cert-bund.de/.well-known/csaf-aggregator/aggregator.json', //TODO provide through system settings
       ecosystemConfig: null,
@@ -164,36 +133,44 @@ export default {
         dataOn: '\u2713',
         dataOff: '\u2715',
       },
-      sampleSrcColumns: [
+      srcCols: [
         {
           title: 'ID', //this.$t('admin.identifier'),
-          field: 'id',
+          field: 'csafEntryId',
+          class: 'tight',
           sortable: true,
-          
         },
         {
           title: 'Name',
           field: 'name',
+          class: 'tight',
           sortable: true,
-          
         },
         {
           title: 'URL',
           field: 'url',
           class: 'tight',
           sortable: true,
-          
+        },
+        {
+          title: this.$t('admin.enabled'),
+          field: 'enabled',
+          class: 'tight',
+          sortable: true,
+          formatter(value, row, index) {
+            return value === true ? '<i class="fa fa-check-square-o" />' : '';
+          },
         },
       ],
-      sampleSrcData: [
-        { id: 1, name: 'BSI WID', url: 'https://wid.cert-bund.de/.well-known/csaf-aggregator/aggregator.json' },
-        { id: 2, name: 'Red Hat', url: 'https://www.redhat.com/.well-known/csaf/provider-metadata.json' },
-        { id: 3, name: 'Example service', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json' },
-      ],
-      sampleSrcOpts: {
+      srcData: [],
+      srcOpts: {
         search: true,
         showColumns: true,
         showRefresh: true,
+        silentSort: false,
+        icons: {
+          refresh: 'fa-refresh',
+        },
       },
     };
   },
@@ -212,6 +189,16 @@ export default {
     },
   },
   methods: {
+    apiUrl: function () {
+      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}`;
+    },
+    refreshCsafSourcesTable: function () {
+      this.$refs.table_sources.refresh({
+        url: this.apiUrl(),
+        pageNumber: 1,
+        silent: true,
+      });
+    },
     removeEcosystem: function (ecosystem) {
       this.enabledEcosystems = this.enabledEcosystems.filter(
         (e) => e !== ecosystem,
@@ -246,27 +233,21 @@ export default {
         },
       ]);*/
     },
+    updateSourcesTable: function () {
+      this.axios.get(this.apiUrl()).then((response) => {
+        console.log(response);
+        this.srcData = response;
+        
+        this.$toastr.s('Csaf sources updated');
+      });
+    },
   },
   created() {
     this.axios.get(this.configUrl).then((response) => {
       let configItems = response.data.filter(function (item) {
         return item.groupName === 'vuln-source';
       });
-      /*for (let i = 0; i < configItems.length; i++) {
-        let item = configItems[i];
-        switch (item.propertyName) {
-          case 'google.osv.enabled':
-            this.ecosystemConfig = item.propertyValue;
-            this.vulnsourceEnabled = this.ecosystemConfig != null;
-            break;
-          case 'google.osv.alias.sync.enabled':
-            this.aliasSyncEnabled = common.toBoolean(item.propertyValue);
-            break;
-          case 'google.osv.base.url':
-            this.osvBaseUrl = item.propertyValue;
-            break;
-        }
-      }*/
+      this.refreshCsafSourcesTable();
       this.enabledEcosystems = this.ecosystemConfig
         .split(';')
         .map((ecosystem) => ecosystem.trim());

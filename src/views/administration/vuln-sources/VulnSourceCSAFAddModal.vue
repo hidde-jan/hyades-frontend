@@ -10,11 +10,11 @@
   
 
     <b-validated-input-group-form-input
-      id="identifier"
+      id="name"
       :label="$t('admin.identifier')"
       input-group-size="mb-3"
       rules="required"
-      v-model="identifier"
+      v-model="name"
     />
     <b-validated-input-group-form-input
       id="url"
@@ -63,22 +63,20 @@
       }}
     </div>
 
-    <hr>
+    <hr />
 
-    
     <b-button size="md" variant="primary" @click="upload()">
-        Upload a file
+      Upload a file
     </b-button>
-
 
     <template v-slot:modal-footer="{ cancel }">
       <b-button size="md" variant="secondary" @click="cancel()">{{
         $t('message.close')
       }}</b-button>
-      <b-button size="md" variant="primary" @click="createRepository()">{{
+      <b-button size="md" variant="primary" @click="createCsafSource()">{{
         $t('message.create')
       }}</b-button>
-      </template>
+    </template>
   </b-modal>
 </template>
 
@@ -103,7 +101,7 @@ export default {
   },
   data() {
     return {
-      identifier: null,
+      name: null,
       url: null,
       repositoryType: null,
       initialRepositoryType: null,
@@ -116,63 +114,42 @@ export default {
         dataOn: '\u2713',
         dataOff: '\u2715',
       },
-      repositoryTypes: [
-        { value: 'COMPOSER', text: 'PHP (Composer)' },
-        { value: 'CPAN', text: 'Perl (CPAN)' },
-        { value: 'GEM', text: 'Ruby (Gem)' },
-        { value: 'GO_MODULES', text: 'Go Modules' },
-        { value: 'CARGO', text: 'Rust (Cargo)' },
-        { value: 'HEX', text: 'Erlang/Elixir (Hex)' },
-        { value: 'MAVEN', text: 'Java (Maven)' },
-        { value: 'NPM', text: 'Javascript (NPM)' },
-        { value: 'NUGET', text: '.NET (NuGet)' },
-        { value: 'PYPI', text: 'Python (Pypi)' },
-      ],
     };
   },
   methods: {
-    createRepository: function () {
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_REPOSITORY}`;
+    createCsafSource: function () {
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}`;
       this.axios
         .put(url, {
-          type: this.repositoryType,
-          identifier: this.identifier,
+          name: this.name,
           url: this.url,
-          internal: this.internal,
-          authenticationRequired: this.repository_authentication,
-          username: this.username,
-          password: this.password || null,
+          //internal: this.internal,
+          //authenticationRequired: this.repository_authentication,
+          //username: this.username,
+          //password: this.password || null,
           enabled: this.enabled,
         })
         .then((response) => {
-          this.$emit('refreshTable');
+          this.$emit('refreshCsafSourcesTable');
+          console.log('Called refresh table from modal');
           this.$toastr.s(this.$t('admin.repository_created'));
-          this.$root.$emit(
-            'bv::hide::modal',
-            'repositoryCreateRepositoryModal',
-          );
+          this.$root.$emit('bv::hide::modal', 'vulnSourceCSAFAddModal');
         })
         .catch((error) => {
           this.$toastr.w(this.$t('condition.unsuccessful_action'));
-          this.$root.$emit(
-            'bv::hide::modal',
-            'repositoryCreateRepositoryModal',
-          );
+          this.$root.$emit('bv::hide::modal', 'vulnSourceCSAFAddModal');
         });
       this.resetValues();
     },
     resetValues: function () {
-      this.repositoryType = this.initialRepositoryType;
-      this.identifier = null;
+      this.name = null;
       this.url = null;
-      this.internal = false;
-      this.username = null;
-      this.password = null;
+      //this.internal = false;
+      //this.username = null;
+      //this.password = null;
       this.enabled = true;
-      this.repository_authentication = false;
+      //this.repository_authentication = false;
     },
   },
 };
 </script>
-
-
