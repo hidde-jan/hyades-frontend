@@ -37,7 +37,7 @@
                     {{ $t('admin.upload_file') }}
                   </b-button>
                 </div>
-                <h3>{{ $t('admin.csaf_sources') }}:</h3>
+                <!--<h3>{{ $t('admin.csaf_sources') }}:</h3>-->
                 <bootstrap-table
                   ref="table_sources"
                   :columns="srcCols"
@@ -63,7 +63,7 @@
             </b-tab>
             <b-tab title="CSAF Documents">
               <b-card-body>
-                <h2>{{ $t('admin.csaf_documents') }}:</h2>
+                <!--<h2>{{ $t('admin.csaf_documents') }}:</h2>-->
                 <b-button
                   size="md"
                   variant="outline-primary"
@@ -89,7 +89,7 @@
     </b-card-body>
     <b-card-footer></b-card-footer>
     <ecosystem-modal v-on:selection="updateEcosystem" />
-    <vuln-source-c-s-a-f-add />
+    <vuln-source-c-s-a-f-add v-on:refreshTable="refreshCsafSourcesTable" />
     <vuln-source-c-s-a-f-compare />
     <vuln-source-c-s-a-f-upload />
   </b-card>

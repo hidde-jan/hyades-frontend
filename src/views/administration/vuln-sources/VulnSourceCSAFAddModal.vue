@@ -7,8 +7,6 @@
     no-stacking
     :title="$t('admin.add_source')"
   >
-
-
     <b-validated-input-group-form-input
       id="name"
       :label="$t('admin.identifier')"
@@ -126,7 +124,7 @@ export default {
           enabled: this.enabled,
         })
         .then((response) => {
-          this.$emit('refreshCsafSourcesTable');
+          this.$emit('refreshTable');
           console.log('Called refresh table from modal');
           this.$toastr.s(this.$t('admin.repository_created'));
           this.$root.$emit('bv::hide::modal', 'vulnSourceCSAFAddModal');
