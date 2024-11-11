@@ -96,7 +96,6 @@
 </template>
 <script>
 import { Switch as cSwitch } from '@coreui/vue';
-import common from '../../../shared/common';
 import configPropertyMixin from '../mixins/configPropertyMixin';
 import EcosystemModal from './EcosystemModal';
 import VulnSourceCSAFAdd from './VulnSourceCSAFAddModal.vue';
@@ -104,9 +103,12 @@ import ActionableListGroupItem from '../../components/ActionableListGroupItem.vu
 import BValidatedInputGroupFormInput from '../../../forms/BValidatedInputGroupFormInput';
 import VulnSourceCSAFCompare from './VulnSourceCSAFCompare.vue';
 import VulnSourceCSAFUpload from './VulnSourceCSAFUpload.vue';
+import i18n from '../../../i18n';
+import bootstrapTableMixin from '../../../mixins/bootstrapTableMixin';
+import EventBus from '../../../shared/eventbus';
 
 export default {
-  mixins: [configPropertyMixin],
+  mixins: [configPropertyMixin, bootstrapTableMixin],
   props: {
     header: String,
   },
@@ -163,9 +165,138 @@ export default {
         search: true,
         showColumns: true,
         showRefresh: true,
+        pagination: true,
+        sidePagination: 'client',
+        queryParamsType: 'pageSize',
+        pageList: '[10, 25, 50, 100]',
+        pageSize: 10,
         silentSort: false,
         icons: {
           refresh: 'fa-refresh',
+        },
+        detailView: true,
+        detailViewIcon: false,
+        detailViewByClick: true,
+        onExpandRow: this.vueFormatterInit,
+        detailFormatter: (index, row) => {
+          return this.vueFormatter({
+            i18n,
+            template: `
+                <b-row class="expanded-row">
+                  <b-col sm="6">
+                    <b-validated-input-group-form-input
+                      id="url" :label="$t('admin.url')"
+                      input-group-size="mb-3" rules="required"
+                      type="url" v-model="url"
+                      autofocus="true"
+                      v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                  </b-col>
+                  <b-col sm="6">
+
+                    <div>
+                      <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{$t('admin.internal')}}
+                    </div>
+                    <div>
+                     <c-switch color="primary" v-model="authenticationRequired" label v-bind="labelIcon" />{{$t('admin.repository_authentication')}}
+                    </div>
+
+                    <div>
+                      <b-validated-input-group-form-input
+                        id="username" :label="$t('admin.username')"
+                        input-group-size="mb-3"
+                        v-model="username"
+                        rules="required"
+                        v-show="authenticationRequired"
+                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                    </div>
+
+                    <div>
+                      <b-validated-input-group-form-input
+                        id="password" :label="$t('admin.password')"
+                        input-group-size="mb-3"
+                        type="password"
+                        v-model="password"
+                        rules="required"
+                        v-show="authenticationRequired"
+                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                    </div>
+
+                    <div>
+                      <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{$t('admin.enabled')}}
+                    </div>
+
+                    <div style="text-align:right">
+                       <b-button variant="outline-danger" @click="deleteCsafSource">Delete CSAF source</b-button>
+                    </div>
+                  </b-col>
+                </b-row>
+            `,
+            components: {
+              cSwitch,
+              BValidatedInputGroupFormInput,
+            },
+            data() {
+              return {
+                csafEntry: row,
+                csafEntryId: row.csafEntryId,
+                name: row.name,
+                url: row.url,
+                enabled: row.enabled,
+                labelIcon: {
+                  dataOn: '\u2713',
+                  dataOff: '\u2715',
+                },
+              };
+            },
+            watch: {
+              enabled() {
+                this.updateCsafSource();
+              },
+            },
+            methods: {
+              deleteCsafSource: function () {
+                console.log(`delete csaf source ${this.csafEntryId}`);
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/${this.csafEntryId}`;
+                this.axios
+                  .delete(url)
+                  .then((response) => {
+                    EventBus.$emit('admin:csafSources:rowDeleted', index);
+                    this.$toastr.s(this.$t('admin.repository_deleted'));
+                  })
+                  .catch((error) => {
+                    this.$toastr.w(this.$t('condition.unsuccessful_action'));
+                  });
+              },
+              updateCsafSource: function () {
+                console.log(`update entry ${this.csafEntryId}`);
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}`;
+                this.axios
+                  .post(url, {
+                    csafEntryId: this.csafEntryId,
+                    url: this.url,
+                    name: this.name,
+                    //authenticationRequired: this.authenticationRequired,
+                    //username: this.username,
+                    //password:
+                    //  this.password || 'HiddenDecryptedPropertyPlaceholder',
+                    enabled: this.enabled,
+                    //uuid: this.uuid,
+                  })
+                  .then((response) => {
+                    this.csafEntry = response.data;
+                    EventBus.$emit(
+                      'admin:csafSources:rowUpdate',
+                      index,
+                      this.csafEntry,
+                    );
+                    this.$toastr.s(this.$t('message.updated'));
+                  })
+                  .catch((error) => {
+                    this.$toastr.w(this.$t('condition.unsuccessful_action'));
+                  });
+              },
+            }
+          });
         },
       },
     };
@@ -267,6 +398,17 @@ export default {
       this.refreshCsafSourcesTable();
       this.configInitialized = true;
     });
+    EventBus.$on('admin:csafSources:rowDeleted', (index, row) => {
+      this.refreshCsafSourcesTable();
+    });
+    EventBus.$on('admin:csafSources:rowUpdate', (index, row) => {
+      this.$refs.table_sources.updateRow({ index: index, row: row });
+      this.$refs.table_sources.expandRow(index);
+    });
   },
+  beforeDestroy() {
+    EventBus.$off('admin:csafSources:rowUpdated');
+    EventBus.$off('admin:csafSources:rowDeleted');
+  }
 };
 </script>
