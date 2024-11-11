@@ -1,13 +1,7 @@
 <template>
   <b-card no-body :header="header">
     <b-card-body>
-      <!--TODO: Include logo file-->
-      <img
-        alt="CSAF logo"
-        src="https://oasis-open.github.io/csaf-documentation/assets/images/screen-shot-2022-11-28-at-10.16.00-pm-279x97.png"
-        width="65"
-      />
-
+      <img alt="CSAF logo" src="@/assets/img/csaf-logo.png" width="130" />
       <hr />
       <c-switch
         color="primary"
@@ -15,7 +9,7 @@
         label
         v-bind="labelIcon"
         v-model="vulnsourceEnabled"
-        :disabled="enabledEcosystems.length === 0"
+        :disabled="!configInitialized"
       />
       {{ $t('admin.vulnsource_csaf_advisories_enable') }}
       <hr />
@@ -59,8 +53,7 @@
                   :options="options"
                 >
                 </bootstrap-table>
-                <hr>
-
+                <hr />
               </b-card-body>
               <!--<repository-create-repository-modal
                   :type="type"
@@ -94,9 +87,7 @@
         </b-card>
       </div>
     </b-card-body>
-    <b-card-footer>
-
-    </b-card-footer>
+    <b-card-footer></b-card-footer>
     <ecosystem-modal v-on:selection="updateEcosystem" />
     <vuln-source-c-s-a-f-add />
     <vuln-source-c-s-a-f-compare />
@@ -111,8 +102,8 @@ import EcosystemModal from './EcosystemModal';
 import VulnSourceCSAFAdd from './VulnSourceCSAFAddModal.vue';
 import ActionableListGroupItem from '../../components/ActionableListGroupItem.vue';
 import BValidatedInputGroupFormInput from '../../../forms/BValidatedInputGroupFormInput';
-import VulnSourceCSAFCompare from './VulnSourceCSAFCompare.vue'
-import VulnSourceCSAFUpload from './VulnSourceCSAFUpload.vue'
+import VulnSourceCSAFCompare from './VulnSourceCSAFCompare.vue';
+import VulnSourceCSAFUpload from './VulnSourceCSAFUpload.vue';
 
 export default {
   mixins: [configPropertyMixin],
@@ -131,13 +122,9 @@ export default {
   data() {
     return {
       selectedRows: [],
+      configInitialized: false, // Wait for retrieving config
       vulnsourceEnabled: false,
-      aliasSyncEnabled: false,
-      //aliasGitHubIssueUrl: 'https://github.com/google/osv.dev/issues/888',
-      csafBaseUrl:
-        'https://wid.cert-bund.de/.well-known/csaf-aggregator/aggregator.json', //TODO provide through system settings
-      ecosystemConfig: null,
-      enabledEcosystems: [],
+      vulnsourceToggleInitialized: false,
       labelIcon: {
         dataOn: '\u2713',
         dataOff: '\u2715',
@@ -184,14 +171,15 @@ export default {
     };
   },
   watch: {
-    vulnsourceEnabled(toggleChange) {
-      if (toggleChange === false) {
-        this.enabledEcosystems = [];
+    vulnsourceEnabled(newValue) {
+      if (!this.vulnsourceToggleInitialized) {
+        this.vulnsourceToggleInitialized = true; // skip when initializing
+      } else {
         this.updateConfigProperties([
           {
             groupName: 'vuln-source',
-            propertyName: 'google.osv.enabled',
-            propertyValue: null,
+            propertyName: 'csaf.enabled',
+            propertyValue: this.vulnsourceEnabled,
           },
         ]);
       }
@@ -199,17 +187,18 @@ export default {
   },
   methods: {
     handleAdd(id) {
-      const row = this.sampleRecData.find(item => item.id === id);
+      const row = this.sampleRecData.find((item) => item.id === id);
       console.log('Row added:', row);
       // TODO: Add to sources
     },
-    onCheckChange(selected){
+    onCheckChange(selected) {
       this.selectedRows = selected;
-      console.log("selected");
+      console.log('selected');
       console.log(this.selectedRows);
     },
     openCompare() {
-      if (this.selectedRows.length !== 2) {  //debugging, should be "==="
+      if (this.selectedRows.length !== 2) {
+        //debugging, should be "==="
         this.$bvModal.show('vulnSourceCSAFCompareModal');
       } else {
         alert(this.$t('admin.please_select_two_rows'));
@@ -239,25 +228,15 @@ export default {
       }
       this.vulnsourceEnabled = this.enabledEcosystems.length !== 0;
     },
-    saveUrl: function () {
-      /*
+    saveConfiguration: function () {
+      console.log('Saving config changes ');
       this.updateConfigProperties([
         {
           groupName: 'vuln-source',
-          propertyName: 'google.osv.base.url',
-          propertyValue: this.osvBaseUrl,
+          propertyName: 'csaf.enabled',
+          propertyValue: this.vulnsourceEnabled,
         },
-        {
-          groupName: 'vuln-source',
-          propertyName: 'google.osv.enabled',
-          propertyValue: this.enabledEcosystems.join(';'),
-        },
-        {
-          groupName: 'vuln-source',
-          propertyName: 'google.osv.alias.sync.enabled',
-          propertyValue: this.aliasSyncEnabled,
-        },
-      ]);*/
+      ]);
     },
     updateSourcesTable: function () {
       this.axios.get(this.apiUrl()).then((response) => {
@@ -268,15 +247,25 @@ export default {
       });
     },
   },
-  created() {
+  mounted() {
     this.axios.get(this.configUrl).then((response) => {
       let configItems = response.data.filter(function (item) {
         return item.groupName === 'vuln-source';
       });
+      for (let i = 0; i < configItems.length; i++) {
+        let item = configItems[i];
+        switch (item.propertyName) {
+          case 'csaf.enabled':
+            if (item.propertyValue === 'true') {
+              this.vulnsourceEnabled = true;
+            } else {
+              this.vulnsourceToggleInitialized = true; // toggle is initialized
+            }
+            break;
+        }
+      }
       this.refreshCsafSourcesTable();
-      this.enabledEcosystems = this.ecosystemConfig
-        .split(';')
-        .map((ecosystem) => ecosystem.trim());
+      this.configInitialized = true;
     });
   },
 };
