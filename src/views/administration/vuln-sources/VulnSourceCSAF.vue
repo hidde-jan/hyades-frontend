@@ -48,9 +48,9 @@
                 <h3>{{ $t('admin.suggested_discovery_sources') }}:</h3>
                 <bootstrap-table
                   ref="table_suggested"
-                  :columns="columns"
-                  :data="data"
-                  :options="options"
+                  :columns="recColumns"
+                  :data="recData"
+                  :options="recOptions"
                 >
                 </bootstrap-table>
                 <hr />
@@ -74,9 +74,9 @@
                 </b-button>
                 <bootstrap-table
                   ref="table_documents"
-                  :columns="columns"
-                  :data="data"
-                  :options="options"
+                  :columns="docColumns"
+                  :data="docData"
+                  :options="docOpts"
                   data-click-to-select="true"
                   @check-change="onCheckChange"
                 >
@@ -90,7 +90,7 @@
     <b-card-footer></b-card-footer>
     <ecosystem-modal v-on:selection="updateEcosystem" />
     <vuln-source-c-s-a-f-add v-on:refreshTable="refreshCsafSourcesTable" />
-    <vuln-source-c-s-a-f-compare />
+    <vuln-source-c-s-a-f-compare :leftTitle="compareLeftTitle" :rightTitle="compareRightTitle" :leftContent="compareLeftContent" :rightContent="compareRightContent"  />
     <vuln-source-c-s-a-f-upload />
   </b-card>
 </template>
@@ -124,12 +124,125 @@ export default {
   data() {
     return {
       selectedRows: [],
+      compareLeftTitle: "",
+      compareLeftContent: "",
+      compareRightTitle: "",
+      compareRightContent: "",
       configInitialized: false, // Wait for retrieving config
       vulnsourceEnabled: false,
       vulnsourceToggleInitialized: false,
       labelIcon: {
         dataOn: '\u2713',
         dataOff: '\u2715',
+      },
+     recColumns: [
+        {
+          title: 'ID',
+          field: 'id',
+          sortable: true,
+
+        },
+        {
+          title: 'Name',
+          field: 'name',
+          sortable: true,
+
+        },
+        {
+          title: 'URL',
+          field: 'url',
+          class: 'tight',
+          sortable: true,
+
+        },
+        {
+          title: 'New',
+          field: 'new',
+          class: 'tight',
+          sortable: true,
+
+        },
+        {
+          title: 'Actions',
+          field: 'actions',
+          formatter: (value, row) => {
+            return `<button class="btn btn-primary" onclick="handleAdd(${row.id})" >  <span class="fa fa-plus"></span> Add</button>`;
+          },
+        },
+      ],
+      recData: [
+        //TODO: Remove when real data available
+        // test data:
+        { id: 1, name: 'Example service 2', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json', new: 'New'},
+        { id: 2, name: 'Example service 3', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json'},
+      ],
+      recOptions: {
+        search: true,
+        showColumns: true,
+        showRefresh: true,
+        pagination: true,
+        sidePagination: 'client',
+        queryParamsType: 'pageSize',
+        pageList: '[10, 25, 50, 100]',
+        pageSize: 10,
+        silentSort: false,
+        icons: {
+          refresh: 'fa-refresh',
+        },
+      },
+      docColumns: [
+        {
+          title: 'Select',
+          field: 'select',
+          checkbox: true,
+        },
+        {
+          title: 'ID',
+          field: 'id',
+          sortable: true,
+
+        },
+        {
+          title: 'Vendor',
+          field: 'vendor',
+          sortable: true,
+
+        },
+        {
+          title: 'Version',
+          field: 'version',
+          class: 'tight',
+          sortable: true,
+
+        },
+        {
+          title: 'Last updated',
+          field: 'last_updated',
+          class: 'tight',
+          sortable: true,
+
+        },
+      ],
+      docData: [
+        // TODO: Delete when real data available
+        // for tests, delete later
+        { id: 1, vendor: 'Vendor 1', version: '1.0', last_updated: '12-07-24'},
+        { id: 2, vendor: 'Vendor 2', version: '1.3', last_updated: '06-03-24'},
+      ],
+      docOpts: {
+        search: true,
+        showColumns: true,
+        showRefresh: true,
+        pagination: true,
+        sidePagination: 'client',
+        queryParamsType: 'pageSize',
+        pageList: '[10, 25, 50, 100]',
+        pageSize: 10,
+        silentSort: false,
+        icons: {
+          refresh: 'fa-refresh',
+        },
+        //TODO: Implement detail view with delete and edit button
       },
       srcCols: [
         {
@@ -320,14 +433,28 @@ export default {
     handleAdd(id) {
       const row = this.sampleRecData.find((item) => item.id === id);
       console.log('Row added:', row);
-      // TODO: Add to sources
+      // TODO: Add clicked suggested source to sources
+      // TODO: Remove clicked suggested source from suggested
+      this.refreshCsafSourcesTable();
+      this.refreshCsafSuggestedTable();
     },
     onCheckChange(selected) {
       this.selectedRows = selected;
+      //TODO: set values from selected lines in table; format unknown
+     /* this.compareLeftTitle=""
+      this.compareLeftContent=""
+      this.compareRightTitle= ""
+      this.compareRightContent= "" */
       console.log('selected');
       console.log(this.selectedRows);
     },
     openCompare() {
+      // for tests:
+      //TODO: Remove when real data from tables available
+      this.compareLeftTitle="CSAF 1"
+      this.compareLeftContent="CSAF CSAF CSAF"
+      this.compareRightTitle= "CSAF 2"
+      this.compareRightContent= "C$AF CSAF CSAF"
       if (this.selectedRows.length !== 2) {
         //debugging, should be "==="
         this.$bvModal.show('vulnSourceCSAFCompareModal');
@@ -340,6 +467,13 @@ export default {
     },
     refreshCsafSourcesTable: function () {
       this.$refs.table_sources.refresh({
+        url: this.apiUrl(),
+        pageNumber: 1,
+        silent: true,
+      });
+    },
+    refreshCsafSuggestedTable: function () {
+      this.$refs.table_suggested.refresh({
         url: this.apiUrl(),
         pageNumber: 1,
         silent: true,
@@ -375,6 +509,15 @@ export default {
         this.srcData = response;
 
         this.$toastr.s('Csaf sources updated');
+      });
+    },
+    //TODO: find correct endpoint
+    updateDocumentsTable: function () {
+      this.axios.get(this.apiUrl()).then((response) => {
+        console.log(response);
+        this.docData = response;
+
+        this.$toastr.s('Csaf documents updated');
       });
     },
   },

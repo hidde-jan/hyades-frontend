@@ -35,7 +35,6 @@ import { CodeDiff } from 'v-code-diff'
 export default {
   name: 'vulnSourceCSAFCompare',
   props: {
-    type: String,
     leftTitle: String,
     leftContent: String,
     rightTitle: String,

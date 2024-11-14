@@ -40,14 +40,9 @@ import BValidatedInputGroupFormInput from '../../../forms/BValidatedInputGroupFo
 export default {
   name: 'vulnSourceCSAFUpload',
   props: {
-    type: String,
   },
   components: {
     BValidatedInputGroupFormInput,
-  },
-  created() {
-    this.initialRepositoryType = this.type;
-    this.repositoryType = this.type;
   },
   data() {
     return {
@@ -69,6 +64,7 @@ export default {
         formData.append('file', this.selectedFile);
 
         try {
+          //TODO: Find correct api endpoint
           const response = await axios.post('https://somewhere/upload', formData, {    //todo: change target
             headers: {
               'Content-Type': 'multipart/form-data',
