@@ -78,7 +78,6 @@
                   :data="docData"
                   :options="docOpts"
                   data-click-to-select="true"
-                  @check-change="onCheckChange"
                 >
                 </bootstrap-table>
               </b-card-body>
@@ -123,7 +122,6 @@ export default {
   },
   data() {
     return {
-      selectedRows: [],
       compareLeftTitle: "",
       compareLeftContent: "",
       compareRightTitle: "",
@@ -438,25 +436,16 @@ export default {
       this.refreshCsafSourcesTable();
       this.refreshCsafSuggestedTable();
     },
-    onCheckChange(selected) {
-      this.selectedRows = selected;
-      //TODO: set values from selected lines in table; format unknown
-     /* this.compareLeftTitle=""
-      this.compareLeftContent=""
-      this.compareRightTitle= ""
-      this.compareRightContent= "" */
-      console.log('selected');
-      console.log(this.selectedRows);
-    },
     openCompare() {
+      const selectedRows = this.$refs.table_documents.getSelections();
       // for tests:
       //TODO: Remove when real data from tables available
+      console.log('Selected rows:', selectedRows);
       this.compareLeftTitle="CSAF 1"
       this.compareLeftContent="CSAF CSAF CSAF"
       this.compareRightTitle= "CSAF 2"
       this.compareRightContent= "C$AF CSAF CSAF"
-      if (this.selectedRows.length !== 2) {
-        //debugging, should be "==="
+      if (selectedRows.length === 2) {
         this.$bvModal.show('vulnSourceCSAFCompareModal');
       } else {
         alert(this.$t('admin.please_select_two_rows'));
