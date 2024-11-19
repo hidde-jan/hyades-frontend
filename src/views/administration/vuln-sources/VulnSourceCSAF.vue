@@ -72,6 +72,14 @@
                   <span class="fa fa-file"></span>
                   {{ $t('admin.compare_selected') }}
                 </b-button>
+                <b-button
+                  size="md"
+                  variant="outline-primary"
+                  @click="deleteSelected"
+                >
+                  <span class="fa fa-trash"></span>
+                  {{ $t('admin.delete_selected') }}
+                </b-button>
                 <bootstrap-table
                   ref="table_documents"
                   :columns="docColumns"
@@ -450,6 +458,11 @@ export default {
       } else {
         alert(this.$t('admin.please_select_two_rows'));
       }
+    },
+    deleteSelected() {
+      const selectedRows = this.$refs.table_documents.getSelections();
+      //TODO: delete selected
+      //TODO: refresh tables
     },
     apiUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}`;
