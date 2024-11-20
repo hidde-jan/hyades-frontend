@@ -172,7 +172,7 @@ export default {
           title: 'Actions',
           field: 'actions',
           formatter: (value, row) => {
-            return `<button class="btn btn-primary" onclick="handleAdd(${row.id})" >  <span class="fa fa-plus"></span> Add</button>`;
+            return `<button class="btn btn-primary" id="rec-${row.id}" >  <span class="fa fa-plus"></span> Add</button>`;
           },
         },
       ],
@@ -228,6 +228,13 @@ export default {
           sortable: true,
 
         },
+        {
+          title: 'Actions',
+          field: 'actions',
+          formatter: (value, row) => {
+            return `<button class="btn btn-primary" id="doc-${row.id}"> <span class="fa fa-search-plus"></span> View Details</button>`;
+          }
+        }
       ],
       docData: [
         // TODO: Delete when real data available
@@ -436,8 +443,12 @@ export default {
     },
   },
   methods: {
+    showDoc(docId) {
+      console.log('ID:', docId);
+      // TODO: open modal with detail view
+    },
     handleAdd(id) {
-      const row = this.sampleRecData.find((item) => item.id === id);
+      const row = this.recData.find((item) => item.id === id);
       console.log('Row added:', row);
       // TODO: Add clicked suggested source to sources
       // TODO: Remove clicked suggested source from suggested
@@ -549,6 +560,20 @@ export default {
     EventBus.$on('admin:csafSources:rowUpdate', (index, row) => {
       this.$refs.table_sources.updateRow({ index: index, row: row });
       this.$refs.table_sources.expandRow(index);
+    });
+    this.$nextTick(() => {
+      this.docData.forEach(doc => {
+        document.getElementById(`doc-${doc.id}`).addEventListener('click', () => {
+          this.showDoc(doc.id);
+        });
+      });
+    });
+    this.$nextTick(() => {
+      this.recData.forEach(rec => {
+        document.getElementById(`rec-${rec.id}`).addEventListener('click', () => {
+          this.handleAdd(rec.id);
+        });
+      });
     });
   },
   beforeDestroy() {
