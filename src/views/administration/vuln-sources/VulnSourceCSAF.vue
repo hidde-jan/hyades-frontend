@@ -99,6 +99,7 @@
     <vuln-source-c-s-a-f-add v-on:refreshTable="refreshCsafSourcesTable" />
     <vuln-source-c-s-a-f-compare :leftTitle="compareLeftTitle" :rightTitle="compareRightTitle" :leftContent="compareLeftContent" :rightContent="compareRightContent"  />
     <vuln-source-c-s-a-f-upload />
+    <vuln-source-c-s-a-f-view-doc-modal :title="detailTitle" :content="detailContent"/>
   </b-card>
 </template>
 <script>
@@ -110,6 +111,7 @@ import ActionableListGroupItem from '../../components/ActionableListGroupItem.vu
 import BValidatedInputGroupFormInput from '../../../forms/BValidatedInputGroupFormInput';
 import VulnSourceCSAFCompare from './VulnSourceCSAFCompare.vue';
 import VulnSourceCSAFUpload from './VulnSourceCSAFUpload.vue';
+import VulnSourceCSAFViewDocModal from './VulnSourceCSAFViewDocModal.vue';
 import i18n from '../../../i18n';
 import bootstrapTableMixin from '../../../mixins/bootstrapTableMixin';
 import EventBus from '../../../shared/eventbus';
@@ -127,6 +129,7 @@ export default {
     BValidatedInputGroupFormInput,
     VulnSourceCSAFCompare,
     VulnSourceCSAFUpload,
+    VulnSourceCSAFViewDocModal,
   },
   data() {
     return {
@@ -134,6 +137,8 @@ export default {
       compareLeftContent: "",
       compareRightTitle: "",
       compareRightContent: "",
+      detailTitle: "",
+      detailContent: "",
       configInitialized: false, // Wait for retrieving config
       vulnsourceEnabled: false,
       vulnsourceToggleInitialized: false,
@@ -445,15 +450,23 @@ export default {
   methods: {
     showDoc(docId) {
       console.log('ID:', docId);
-      // TODO: open modal with detail view
+      const row = this.docData.find((item) => item.id === docId);
+      // TODO: switch to real data
+      //const row = this.docData.find((item) => item.id === docId);
+      //this.detailTitle=row.id
+      //this.detailContent=row.content
+      //for tests
+      this.detailTitle="test"
+      this.detailContent="some content"
+      this.$bvModal.show('vulnSourceCSAFViewDocModal');
     },
     handleAdd(id) {
       const row = this.recData.find((item) => item.id === id);
       console.log('Row added:', row);
       // TODO: Add clicked suggested source to sources
       // TODO: Remove clicked suggested source from suggested
-      this.refreshCsafSourcesTable();
-      this.refreshCsafSuggestedTable();
+      //this.refreshCsafSourcesTable();
+      //this.refreshCsafSuggestedTable();
     },
     openCompare() {
       const selectedRows = this.$refs.table_documents.getSelections();
