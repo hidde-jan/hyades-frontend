@@ -51,8 +51,17 @@
                   :columns="recColumns"
                   :data="recData"
                   :options="recOptions"
+                  data-click-to-select="true"
                 >
                 </bootstrap-table>
+                <b-button
+                  size="md"
+                  variant="outline-primary"
+                  @click="markRead"
+                >
+                  <span class="fa fa-check"></span>
+                  {{ $t('admin.mark_selected_read') }}
+                </b-button>
                 <hr />
               </b-card-body>
               <!--<repository-create-repository-modal
@@ -148,6 +157,11 @@ export default {
       },
      recColumns: [
         {
+          title: 'Select',
+          field: 'select',
+          checkbox: true,
+        },
+        {
           title: 'ID',
           field: 'id',
           sortable: true,
@@ -157,20 +171,16 @@ export default {
           title: 'Name',
           field: 'name',
           sortable: true,
-
+          formatter: (value, row) => {
+            return row.new === 'New' ? `${value} *` : value;
+          },
         },
         {
           title: 'URL',
           field: 'url',
           class: 'tight',
           sortable: true,
-
-        },
-        {
-          title: 'New',
-          field: 'new',
-          class: 'tight',
-          sortable: true,
+          width: '350px',
 
         },
         {
@@ -199,6 +209,11 @@ export default {
         silentSort: false,
         icons: {
           refresh: 'fa-refresh',
+        },
+        rowAttributes: (row) => {
+          return {
+            style: row.new === 'New' ? 'font-weight: bold;' : ''
+          };
         },
       },
       docColumns: [
@@ -486,6 +501,13 @@ export default {
     deleteSelected() {
       const selectedRows = this.$refs.table_documents.getSelections();
       //TODO: delete selected
+      //TODO: refresh tables
+      //this.refreshCsafSuggestedTable();
+    },
+    markRead() {
+      const selectedRows = this.$refs.table_suggested.getSelections();
+      console.log('Read:', selectedRows);
+      //TODO: mark as read
       //TODO: refresh tables
     },
     apiUrl: function () {

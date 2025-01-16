@@ -158,6 +158,7 @@
     "mapped_ldap_groups": "Mapped LDAP groups",
     "mapped_oidc_groups": "Mapped OpenID Connect Groups",
     "mapped_teams": "Mapped Teams",
+    "mark_selected_read": "Mark selected as read",
     "maven": "Maven",
     "members": "Members",
     "mime_type": "Mime type",
