@@ -28,7 +28,7 @@
       <b-button size="md" variant="secondary" @click="cancel()">{{
           $t('message.close')
         }}</b-button>
-      <b-button size="md" variant="success" @click="upload" class="ml-2">{{
+      <b-button size="md" variant="success" @click="upload(cancel)" class="ml-2">{{
           $t('admin.upload')
         }}</b-button>
     </template>
@@ -58,7 +58,7 @@ export default {
       this.selectedFile = event.target.files[0];
       this.fileName = this.selectedFile ? this.selectedFile.name : '';
     },
-    async upload() {
+    async upload(cancel) {
       if (this.selectedFile) {
         const formData = new FormData();
         formData.append('file', this.selectedFile);
@@ -66,9 +66,9 @@ export default {
         try {
           let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/documents/`;
           const response = await this.axios.putForm(url, formData);
-          
+
           console.log('Upload succeeded:', response.data);
-          this.$bvModal.hide('upload-modal');
+          cancel();
         } catch (error) {
           console.error('Upload failed:', error);
         }
