@@ -64,14 +64,11 @@ export default {
         formData.append('file', this.selectedFile);
 
         try {
-          let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/fileupload`;
-          const response = await this.axios.post(url, formData, {    //todo: change target
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });
+          let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/documents/`;
+          const response = await this.axios.putForm(url, formData);
+          
           console.log('Upload succeeded:', response.data);
-          this.$bvModal.hide('upload-modal'); //
+          this.$bvModal.hide('upload-modal');
         } catch (error) {
           console.error('Upload failed:', error);
         }
