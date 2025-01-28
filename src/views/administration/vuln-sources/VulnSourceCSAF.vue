@@ -54,11 +54,7 @@
                   data-click-to-select="true"
                 >
                 </bootstrap-table>
-                <b-button
-                  size="md"
-                  variant="outline-primary"
-                  @click="markRead"
-                >
+                <b-button size="md" variant="outline-primary" @click="markRead">
                   <span class="fa fa-check"></span>
                   {{ $t('admin.mark_selected_read') }}
                 </b-button>
@@ -106,9 +102,17 @@
     <b-card-footer></b-card-footer>
     <ecosystem-modal v-on:selection="updateEcosystem" />
     <vuln-source-c-s-a-f-add v-on:refreshTable="refreshCsafSourcesTable" />
-    <vuln-source-c-s-a-f-compare :leftTitle="compareLeftTitle" :rightTitle="compareRightTitle" :leftContent="compareLeftContent" :rightContent="compareRightContent"  />
+    <vuln-source-c-s-a-f-compare
+      :leftTitle="compareLeftTitle"
+      :rightTitle="compareRightTitle"
+      :leftContent="compareLeftContent"
+      :rightContent="compareRightContent"
+    />
     <vuln-source-c-s-a-f-upload />
-    <vuln-source-c-s-a-f-view-doc-modal :title="detailTitle" :content="detailContent"/>
+    <vuln-source-c-s-a-f-view-doc-modal
+      :title="detailTitle"
+      :content="detailContent"
+    />
   </b-card>
 </template>
 <script>
@@ -142,12 +146,12 @@ export default {
   },
   data() {
     return {
-      compareLeftTitle: "",
-      compareLeftContent: "",
-      compareRightTitle: "",
-      compareRightContent: "",
-      detailTitle: "",
-      detailContent: "",
+      compareLeftTitle: '',
+      compareLeftContent: '',
+      compareRightTitle: '',
+      compareRightContent: '',
+      detailTitle: '',
+      detailContent: '',
       configInitialized: false, // Wait for retrieving config
       vulnsourceEnabled: false,
       vulnsourceToggleInitialized: false,
@@ -155,7 +159,7 @@ export default {
         dataOn: '\u2713',
         dataOff: '\u2715',
       },
-     recColumns: [
+      recColumns: [
         {
           title: 'Select',
           field: 'select',
@@ -163,9 +167,8 @@ export default {
         },
         {
           title: 'ID',
-          field: 'id',
+          field: 'csafEntryId',
           sortable: true,
-
         },
         {
           title: 'Name',
@@ -181,21 +184,20 @@ export default {
           class: 'tight',
           sortable: true,
           width: '350px',
-
         },
         {
           title: 'Actions',
           field: 'actions',
           formatter: (value, row) => {
-            return `<button class="btn btn-primary" id="rec-${row.id}" >  <span class="fa fa-plus"></span> Add</button>`;
+            return `<button class="btn btn-primary" id="rec-${row.csafEntryId}" >  <span class="fa fa-plus"></span> Add</button>`;
           },
         },
       ],
       recData: [
         //TODO: Remove when real data available
         // test data:
-        { id: 1, name: 'Example service 2', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json', new: 'New'},
-        { id: 2, name: 'Example service 3', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json'},
+        //{ id: 1, name: 'Example service 2', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json', new: 'New'},
+        //{ id: 2, name: 'Example service 3', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json'},
       ],
       recOptions: {
         search: true,
@@ -212,7 +214,7 @@ export default {
         },
         rowAttributes: (row) => {
           return {
-            style: row.new === 'New' ? 'font-weight: bold;' : ''
+            style: row.new === 'New' ? 'font-weight: bold;' : '',
           };
         },
       },
@@ -224,43 +226,43 @@ export default {
         },
         {
           title: 'ID',
-          field: 'id',
+          field: 'csafEntryId',
           sortable: true,
-
+        },
+        {
+          title: 'Name',
+          field: 'name',
+          sortable: true,
         },
         {
           title: 'Vendor',
           field: 'vendor',
           sortable: true,
-
         },
         {
           title: 'Version',
           field: 'version',
           class: 'tight',
           sortable: true,
-
         },
         {
           title: 'Last updated',
           field: 'last_updated',
           class: 'tight',
           sortable: true,
-
         },
         {
           title: 'Actions',
           field: 'actions',
           formatter: (value, row) => {
-            return `<button class="btn btn-primary" id="doc-${row.id}"> <span class="fa fa-search-plus"></span> View Details</button>`;
-          }
-        }
+            return `<button class="btn btn-primary" id="doc-${row.csafEntryId}"> <span class="fa fa-search-plus"></span> View Details</button>`;
+          },
+        },
       ],
       docData: [
-        // TODO: Delete when real data available
         // for tests, delete later
-        { id: 1, vendor: 'Vendor 1', version: '1.0', last_updated: '12-07-24'},
-        { id: 2, vendor: 'Vendor 2', version: '1.3', last_updated: '06-03-24'},
+        //{ csafEntryId: 1, vendor: 'Vendor 1', version: '1.0', last_updated: '12-07-24'},
+        //{ csafEntryId: 2, vendor: 'Vendor 2', version: '1.3', last_updated: '06-03-24'},
       ],
       docOpts: {
         search: true,
@@ -275,7 +277,6 @@ export default {
         icons: {
           refresh: 'fa-refresh',
         },
-        //TODO: Implement detail view with delete and edit button
       },
       srcCols: [
         {
@@ -441,7 +442,7 @@ export default {
                     this.$toastr.w(this.$t('condition.unsuccessful_action'));
                   });
               },
-            }
+            },
           });
         },
       },
@@ -464,19 +465,23 @@ export default {
   },
   methods: {
     showDoc(docId) {
+      console.log('docData:', this.docData);
       console.log('ID:', docId);
-      const row = this.docData.find((item) => item.id === docId);
+      const row = this.docData.find((item) => item.csafEntryId === docId);
       // TODO: switch to real data
+      console.log('Show doc:', row);
       //const row = this.docData.find((item) => item.id === docId);
       //this.detailTitle=row.id
       //this.detailContent=row.content
       //for tests
-      this.detailTitle="test"
-      this.detailContent="some content"
+      this.detailTitle = 'test';
+      this.detailContent = 'some content';
       this.$bvModal.show('vulnSourceCSAFViewDocModal');
     },
     handleAdd(id) {
-      const row = this.recData.find((item) => item.id === id);
+      console.log('recData:', this.srcData);
+      console.log(`id clicked: ${id}`);
+      const row = this.recData.find((item) => item.csafEntryId.toString() === id.toString());
       console.log('Row added:', row);
       // TODO: Add clicked suggested source to sources
       // TODO: Remove clicked suggested source from suggested
@@ -488,10 +493,10 @@ export default {
       // for tests:
       //TODO: Remove when real data from tables available
       console.log('Selected rows:', selectedRows);
-      this.compareLeftTitle="CSAF 1"
-      this.compareLeftContent="CSAF CSAF CSAF"
-      this.compareRightTitle= "CSAF 2"
-      this.compareRightContent= "C$AF CSAF CSAF"
+      this.compareLeftTitle = 'CSAF 1';
+      this.compareLeftContent = 'CSAF CSAF CSAF';
+      this.compareRightTitle = 'CSAF 2';
+      this.compareRightContent = 'C$AF CSAF CSAF';
       if (selectedRows.length === 2) {
         this.$bvModal.show('vulnSourceCSAFCompareModal');
       } else {
@@ -500,9 +505,28 @@ export default {
     },
     deleteSelected() {
       const selectedRows = this.$refs.table_documents.getSelections();
-      //TODO: delete selected
-      //TODO: refresh tables
-      //this.refreshCsafSuggestedTable();
+
+      if (selectedRows.length === 0) {
+        console.log(`nothing selected`);
+        return;
+      }
+
+      const deletePromises = selectedRows.map((row) => {
+        const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/documents/${row.csafEntryId}`;
+        return this.axios
+          .delete(url)
+          .then((response) => {
+            EventBus.$emit('admin:csafDocuments:rowDeleted', row.id);
+            this.$toastr.s(this.$t('admin.document_deleted', { id: row.id }));
+          })
+          .catch((error) => {
+            this.$toastr.w(this.$t('condition.unsuccessful_action'));
+          });
+      });
+
+      Promise.all(deletePromises).then(() => {
+        this.refreshCsafDocumentsTable();
+      });
     },
     markRead() {
       const selectedRows = this.$refs.table_suggested.getSelections();
@@ -513,6 +537,12 @@ export default {
     apiUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}`;
     },
+    apiDocsUrl: function () {
+      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/documents`;
+    },
+    apiDisUrl: function () {
+      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/discoveries`;
+    },
     refreshCsafSourcesTable: function () {
       this.$refs.table_sources.refresh({
         url: this.apiUrl(),
@@ -522,7 +552,14 @@ export default {
     },
     refreshCsafSuggestedTable: function () {
       this.$refs.table_suggested.refresh({
-        url: this.apiUrl(),
+        url: this.apiDisUrl(),
+        pageNumber: 1,
+        silent: true,
+      });
+    },
+    refreshCsafDocumentsTable: function () {
+      this.$refs.table_documents.refresh({
+        url: this.apiDocsUrl(),
         pageNumber: 1,
         silent: true,
       });
@@ -587,6 +624,8 @@ export default {
         }
       }
       this.refreshCsafSourcesTable();
+      this.refreshCsafDocumentsTable();
+      this.refreshCsafSuggestedTable();
       this.configInitialized = true;
     });
     EventBus.$on('admin:csafSources:rowDeleted', (index, row) => {
@@ -596,24 +635,24 @@ export default {
       this.$refs.table_sources.updateRow({ index: index, row: row });
       this.$refs.table_sources.expandRow(index);
     });
-    this.$nextTick(() => {
-      this.docData.forEach(doc => {
-        document.getElementById(`doc-${doc.id}`).addEventListener('click', () => {
-          this.showDoc(doc.id);
-        });
-      });
+    this.$refs.table_documents.$el.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target.matches('[id^="doc-"]')) {
+        const docId = target.id.split('-')[1];
+        this.showDoc(docId);
+      }
     });
-    this.$nextTick(() => {
-      this.recData.forEach(rec => {
-        document.getElementById(`rec-${rec.id}`).addEventListener('click', () => {
-          this.handleAdd(rec.id);
-        });
-      });
+    this.$refs.table_suggested.$el.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target.matches('[id^="rec-"]')) {
+        const recId = target.id.split('-')[1];
+        this.handleAdd(recId);
+      }
     });
   },
   beforeDestroy() {
     EventBus.$off('admin:csafSources:rowUpdated');
     EventBus.$off('admin:csafSources:rowDeleted');
-  }
+  },
 };
 </script>
