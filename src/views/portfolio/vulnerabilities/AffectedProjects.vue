@@ -104,7 +104,7 @@ export default {
         showRefresh: true,
         pagination: true,
         silentSort: false,
-        sidePagination: 'client',
+        sidePagination: 'server',
         queryParamsType: 'pageSize',
         pageList: '[10, 25, 50, 100]',
         pageSize: 10,
@@ -113,12 +113,16 @@ export default {
           refresh: 'fa-refresh',
         },
         url: this.apiUrl(),
+        responseHandler: function (res, xhr) {
+          res.total = xhr.getResponseHeader('X-Total-Count');
+          return res;
+        },
       },
     };
   },
   methods: {
     apiUrl: function () {
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_VULNERABILITY}/source/${this.source}/vuln/${this.vulnId}/projects`;
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_VULNERABILITY}/source/${this.source}/vuln/${encodeURIComponent(this.vulnId)}/projects`;
       if (this.showInactiveProjects === undefined) {
         url += '?excludeInactive=true';
       } else {
@@ -126,8 +130,12 @@ export default {
       }
       return url;
     },
-    tableLoaded: function (array) {
-      this.$emit('total', array.length);
+    tableLoaded: function (data) {
+      if (data && data.total !== undefined) {
+        this.$emit('total', data.total);
+      } else {
+        this.$emit('total', '?');
+      }
     },
     refreshTable: function () {
       this.$refs.table.refresh({
@@ -151,6 +159,10 @@ export default {
       this.$refs.table.showLoading();
       this.currentPage = 1;
       this.refreshTable();
+    },
+    vulnId() {
+      // update url when vulnId changes, will trigger table refresh
+      this.$refs.table.refreshOptions({ ...this.options, url: this.apiUrl() });
     },
   },
 };
