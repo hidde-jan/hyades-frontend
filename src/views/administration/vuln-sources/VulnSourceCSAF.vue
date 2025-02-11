@@ -403,7 +403,7 @@ export default {
             methods: {
               deleteCsafSource: function () {
                 console.log(`delete csaf source ${this.csafEntryId}`);
-                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/${this.csafEntryId}`;
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}/${this.csafEntryId}`;
                 this.axios
                   .delete(url)
                   .then((response) => {
@@ -416,7 +416,7 @@ export default {
               },
               updateCsafSource: function () {
                 console.log(`update entry ${this.csafEntryId}`);
-                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}`;
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
                 this.axios
                   .post(url, {
                     csafEntryId: this.csafEntryId,
@@ -512,7 +512,7 @@ export default {
       }
 
       const deletePromises = selectedRows.map((row) => {
-        const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/documents/${row.csafEntryId}`;
+        const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/${row.csafEntryId}`;
         return this.axios
           .delete(url)
           .then((response) => {
@@ -535,13 +535,13 @@ export default {
       //TODO: refresh tables
     },
     apiUrl: function () {
-      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}`;
+      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
     },
     apiDocsUrl: function () {
-      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/documents`;
+      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}`;
     },
     apiDisUrl: function () {
-      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}/discoveries`;
+      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DISCOVERY}`;
     },
     refreshCsafSourcesTable: function () {
       this.$refs.table_sources.refresh({

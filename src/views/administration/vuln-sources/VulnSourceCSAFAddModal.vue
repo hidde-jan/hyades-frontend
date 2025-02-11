@@ -112,7 +112,7 @@ export default {
   },
   methods: {
     createCsafSource: function () {
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_ENTITY}`;
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
       this.axios
         .put(url, {
           name: this.name,
