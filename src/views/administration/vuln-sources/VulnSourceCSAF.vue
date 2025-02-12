@@ -1,7 +1,7 @@
 <template>
   <b-card no-body :header="header">
     <b-card-body>
-      <img alt="CSAF logo" src="@/assets/img/csaf-logo.png" width="130" />
+      <h1>CSAF</h1>
       <hr />
       <c-switch
         color="primary"
