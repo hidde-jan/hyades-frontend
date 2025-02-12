@@ -68,6 +68,7 @@
             </b-tab>
             <b-tab title="CSAF Documents">
               <b-card-body>
+                <div id="repositoryToolbar" class="bs-table-custom-toolbar">
                 <!--<h2>{{ $t('admin.csaf_documents') }}:</h2>-->
                 <b-button
                   size="md"
@@ -85,6 +86,7 @@
                   <span class="fa fa-trash"></span>
                   {{ $t('admin.delete_selected') }}
                 </b-button>
+                </div>
                 <bootstrap-table
                   ref="table_documents"
                   :columns="docColumns"
