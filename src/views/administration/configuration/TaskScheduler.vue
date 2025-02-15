@@ -60,6 +60,15 @@
         v-model="osvMirror.value"
         :tooltip="osvMirror.description"
       />
+      <b-validated-input-group-form-input
+        id="csaf_mirror"
+        :label="$t('admin.csaf_advisories')"
+        input-group-size="mb-3"
+        rules="required|min_value:1"
+        type="number"
+        v-model="csafMirror.value"
+        :tooltip="csafMirror.description"
+      />
       <br />
       <h4>Analysis</h4>
       <b-validated-input-group-form-input
@@ -138,6 +147,7 @@ export default {
       nistMirror: { value: '0', description: '' },
       vulndbMirror: { value: '0', description: '' },
       osvMirror: { value: '0', description: '' },
+      csafMirror: { value: '0', description: '' },
       portfolioMetricsUpdate: { value: '0', description: '' },
       vulnerabilityMetricsUpdate: { value: '0', description: '' },
       portfolioVulnerabilityAnalysis: { value: '0', description: '' },
@@ -164,6 +174,11 @@ export default {
           groupName: 'task-scheduler',
           propertyName: 'osv.mirror.cadence',
           propertyValue: this.osvMirror.value,
+        },
+        {
+          groupName: 'task-scheduler',
+          propertyName: 'csaf.mirror.cadence',
+          propertyValue: this.csafMirror.value,
         },
         {
           groupName: 'task-scheduler',
@@ -227,6 +242,10 @@ export default {
           case 'osv.mirror.cadence':
             this.osvMirror.value = item.propertyValue;
             this.osvMirror.description = item.description;
+            break;
+          case 'csaf.mirror.cadence':
+            this.csafMirror.value = item.propertyValue;
+            this.csafMirror.description = item.description;
             break;
           case 'nist.mirror.cadence':
             this.nistMirror.value = item.propertyValue;
