@@ -478,14 +478,12 @@ export default {
       console.log('docData:', this.docData);
       console.log('ID:', docId);
       const row = this.docData.find((item) => item.csafEntryId === docId);
-      // TODO: switch to real data
       console.log('Show doc:', row);
-      //const row = this.docData.find((item) => item.id === docId);
-      //this.detailTitle=row.id
-      //this.detailContent=row.content
+      this.detailTitle = row.name;
+      this.detailContent = this.getDocument(docId);
       //for tests
-      this.detailTitle = 'test';
-      this.detailContent = 'some content';
+      //this.detailTitle = 'test';
+      //this.detailContent = 'some content';
       this.$bvModal.show('vulnSourceCSAFViewDocModal');
     },
     handleAdd(id) {
@@ -500,13 +498,16 @@ export default {
     },
     openCompare() {
       const selectedRows = this.$refs.table_documents.getSelections();
-      // for tests:
-      //TODO: Remove when real data from tables available
       console.log('Selected rows:', selectedRows);
-      this.compareLeftTitle = 'CSAF 1';
-      this.compareLeftContent = 'CSAF CSAF CSAF';
-      this.compareRightTitle = 'CSAF 2';
-      this.compareRightContent = 'C$AF CSAF CSAF';
+      this.compareLeftTitle = selectedRows[0].name;
+      this.compareLeftContent = this.getDocument(selectedRows[0].csafEntryId);
+      this.compareRightTitle = selectedRows[1].name;
+      this.compareRightContent = this.getDocument(selectedRows[1].csafEntryId);
+      // for tests:
+      //this.compareLeftTitle = 'CSAF 1';
+      //this.compareLeftContent = 'CSAF CSAF CSAF';
+      //this.compareRightTitle = 'CSAF 2';
+      //this.compareRightContent = 'C$AF CSAF CSAF';
       if (selectedRows.length === 2) {
         this.$bvModal.show('vulnSourceCSAFCompareModal');
       } else {
@@ -551,6 +552,18 @@ export default {
         .post(url)
         .then((response) => {
           this.$toastr.s(this.$t('admin.trigger_all'));
+        })
+        .catch((error) => {
+          this.$toastr.w(this.$t('condition.unsuccessful_action'));
+        });
+    },
+    getDocument(docId) {
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/${docId}`;
+      this.axios
+        .get(url)
+        .then((response) => {
+          this.$toastr.s(this.$t('admin.repository_deleted'));
+          return response.toString();
         })
         .catch((error) => {
           this.$toastr.w(this.$t('condition.unsuccessful_action'));
