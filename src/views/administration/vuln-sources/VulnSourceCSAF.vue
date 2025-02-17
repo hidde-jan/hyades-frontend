@@ -62,7 +62,7 @@
                   data-click-to-select="true"
                 >
                 </bootstrap-table>
-                <b-button size="md" variant="outline-primary" @click="markRead">
+                <b-button size="md" variant="outline-primary" @click="markReadSuggestions">
                   <span class="fa fa-check"></span>
                   {{ $t('admin.mark_selected_read') }}
                 </b-button>
@@ -94,6 +94,10 @@
                   <span class="fa fa-trash"></span>
                   {{ $t('admin.delete_selected') }}
                 </b-button>
+                  <b-button size="md" variant="outline-primary" @click="markReadDocuments">
+                    <span class="fa fa-check"></span>
+                    {{ $t('admin.mark_selected_read') }}
+                  </b-button>
                 </div>
                 <bootstrap-table
                   ref="table_documents"
@@ -539,10 +543,16 @@ export default {
         this.refreshCsafDocumentsTable();
       });
     },
-    markRead() {
+    markReadSuggestions() {
       const selectedRows = this.$refs.table_suggested.getSelections();
       console.log('Read:', selectedRows);
-      //TODO: mark as read
+      //TODO: mark as read, which api endpoint?
+      //TODO: refresh tables
+    },
+    markReadDocuments() {
+      const selectedRows = this.$refs.table_documents.getSelections();
+      console.log('Read:', selectedRows);
+      //TODO: mark as read, which api endpoint?
       //TODO: refresh tables
     },
     triggerAll() {
