@@ -9,7 +9,7 @@
   >
     <b-validated-input-group-form-input
       id="name"
-      :label="$t('admin.identifier')"
+      :label="$t('message.name')"
       input-group-size="mb-3"
       rules="required"
       v-model="name"
