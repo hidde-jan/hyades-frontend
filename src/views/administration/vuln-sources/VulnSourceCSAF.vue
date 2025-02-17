@@ -36,6 +36,14 @@
                     <span class="fa fa-upload"></span>
                     {{ $t('admin.upload_file') }}
                   </b-button>
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    @click="triggerAll"
+                  >
+                    <span class="fa fa-refresh"></span>
+                    {{ $t('admin.trigger_all') }}
+                  </b-button>
                 </div>
                 <!--<h3>{{ $t('admin.csaf_sources') }}:</h3>-->
                 <bootstrap-table
@@ -535,6 +543,18 @@ export default {
       console.log('Read:', selectedRows);
       //TODO: mark as read
       //TODO: refresh tables
+    },
+    triggerAll() {
+      console.log('Trigger all');
+      const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_TRIGGER}/`;
+      return this.axios
+        .post(url)
+        .then((response) => {
+          this.$toastr.s(this.$t('admin.trigger_all'));
+        })
+        .catch((error) => {
+          this.$toastr.w(this.$t('condition.unsuccessful_action'));
+        });
     },
     apiUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;

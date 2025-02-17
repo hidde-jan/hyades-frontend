@@ -45,6 +45,7 @@
   "URL_CSAF_PROVIDER": "api/v1/csaf/providers",
   "URL_CSAF_DISCOVERY": "api/v1/csaf/discoveries",
   "URL_CSAF_DOCUMENT": "api/v1/csaf/documents",
+  "URL_CSAF_TRIGGER": "api/v1/csaf/trigger-mirror",
   "URL_REPOSITORY": "api/v1/repository",
   "URL_SEARCH": "api/v1/search",
   "URL_SERVICE": "api/v1/service",

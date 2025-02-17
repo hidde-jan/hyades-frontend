@@ -287,6 +287,7 @@
     "test_notification_queued": "A test notification has been queued",
     "token": "Token",
     "trivy": "Trivy",
+    "trigger_all": "Trigger All",
     "upload": "Upload",
     "upload_file": "Upload File",
     "url": "URL",
