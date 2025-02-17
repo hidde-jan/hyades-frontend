@@ -61,6 +61,16 @@
       }}
     </div>
 
+    <div>
+      <b-validated-input-group-form-input
+        id="interval"
+        :label="$t('admin.update_interval')"
+        input-group-size="mb-1"
+        v-model="interval"
+        rules="required"
+      />
+    </div>
+
     <hr />
 
     <template v-slot:modal-footer="{ cancel }">

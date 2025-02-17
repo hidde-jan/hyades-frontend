@@ -288,6 +288,7 @@
     "token": "Token",
     "trivy": "Trivy",
     "trigger_all": "Trigger All",
+    "update_interval": "Update Interval (hours)",
     "upload": "Upload",
     "upload_file": "Upload File",
     "url": "URL",
