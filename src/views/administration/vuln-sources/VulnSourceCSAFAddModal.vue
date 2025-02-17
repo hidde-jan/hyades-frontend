@@ -24,6 +24,12 @@
     />
 
     <div>
+      <b-form-group :label="$t('admin.repository_type')">
+        <b-form-radio-group v-model="repositoryType" :options="radioOptions" />
+      </b-form-group>
+    </div>
+
+    <div>
       <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{
         $t('admin.internal')
       }}
@@ -107,22 +113,32 @@ export default {
     return {
       name: null,
       url: null,
-      repositoryType: null,
       initialRepositoryType: null,
       internal: false,
       repository_authentication: false,
       username: null,
       password: null,
       enabled: true,
+      interval: null,
       labelIcon: {
         dataOn: '\u2713',
         dataOff: '\u2715',
       },
+      repositoryType: 'aggregator', // Standardwert
+      radioOptions: [
+        { text: 'Aggregator', value: 'aggregator' },
+        { text: 'Provider', value: 'provider' },
+      ],
     };
   },
   methods: {
     createCsafSource: function () {
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
+      let url ='';
+      if (this.repositoryType === 'aggregator') {
+        url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
+      } else {
+        url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
+      }
       this.axios
         .put(url, {
           name: this.name,
