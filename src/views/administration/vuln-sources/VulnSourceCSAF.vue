@@ -304,6 +304,9 @@ export default {
           field: 'name',
           class: 'tight',
           sortable: true,
+          formatter: (value, row) => {
+            return row.new === 'New' ? `${value} *` : value;
+          },
         },
         {
           title: 'URL',
