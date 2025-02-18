@@ -71,7 +71,11 @@
                   data-click-to-select="true"
                 >
                 </bootstrap-table>
-                <b-button size="md" variant="outline-primary" @click="markReadSuggestions">
+                <b-button
+                  size="md"
+                  variant="outline-primary"
+                  @click="markReadSuggestions"
+                >
                   <span class="fa fa-check"></span>
                   {{ $t('admin.mark_selected_read') }}
                 </b-button>
@@ -81,24 +85,28 @@
             <b-tab title="CSAF Documents">
               <b-card-body>
                 <div id="repositoryToolbar" class="bs-table-custom-toolbar">
-                <!--<h2>{{ $t('admin.csaf_documents') }}:</h2>-->
-                <b-button
-                  size="md"
-                  variant="outline-primary"
-                  @click="openCompare"
-                >
-                  <span class="fa fa-file"></span>
-                  {{ $t('admin.compare_selected') }}
-                </b-button>
-                <b-button
-                  size="md"
-                  variant="outline-primary"
-                  @click="deleteSelected"
-                >
-                  <span class="fa fa-trash"></span>
-                  {{ $t('admin.delete_selected') }}
-                </b-button>
-                  <b-button size="md" variant="outline-primary" @click="markReadDocuments">
+                  <!--<h2>{{ $t('admin.csaf_documents') }}:</h2>-->
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    @click="openCompare"
+                  >
+                    <span class="fa fa-file"></span>
+                    {{ $t('admin.compare_selected') }}
+                  </b-button>
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    @click="deleteSelected"
+                  >
+                    <span class="fa fa-trash"></span>
+                    {{ $t('admin.delete_selected') }}
+                  </b-button>
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    @click="markReadDocuments"
+                  >
                     <span class="fa fa-check"></span>
                     {{ $t('admin.mark_selected_read') }}
                   </b-button>
@@ -690,7 +698,9 @@ export default {
     handleAdd(id) {
       console.log('recData:', this.srcData);
       console.log(`id clicked: ${id}`);
-      const row = this.recData.find((item) => item.csafEntryId.toString() === id.toString());
+      const row = this.recData.find(
+        (item) => item.csafEntryId.toString() === id.toString(),
+      );
       console.log('Row added:', row);
       // TODO: Add clicked suggested source to sources
       // TODO: Remove clicked suggested source from suggested
