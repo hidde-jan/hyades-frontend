@@ -45,7 +45,8 @@
                     {{ $t('admin.trigger_all') }}
                   </b-button>
                 </div>
-                <!--<h3>{{ $t('admin.csaf_sources') }}:</h3>-->
+
+                <h4>{{ $t('admin.csaf_aggregators') }}</h4>
                 <bootstrap-table
                   ref="table_sources"
                   :columns="srcCols"
@@ -53,7 +54,15 @@
                   :options="srcOpts"
                 >
                 </bootstrap-table>
-                <h3>{{ $t('admin.suggested_discovery_sources') }}:</h3>
+                <h4>{{ $t('admin.csaf_providers') }}</h4>
+                <bootstrap-table
+                  ref="table_providers"
+                  :columns="provCols"
+                  :data="provData"
+                  :options="provOpts"
+                >
+                </bootstrap-table>
+                <h4>{{ $t('admin.suggested_discovery_sources') }}</h4>
                 <bootstrap-table
                   ref="table_suggested"
                   :columns="recColumns"
@@ -68,11 +77,6 @@
                 </b-button>
                 <hr />
               </b-card-body>
-              <!--<repository-create-repository-modal
-                  :type="type"
-                  v-on:refreshTable="refreshTable"
-                />-->
-              <!--</b-card>-->
             </b-tab>
             <b-tab title="CSAF Documents">
               <b-card-body>
@@ -443,6 +447,187 @@ export default {
               updateCsafSource: function () {
                 console.log(`update entry ${this.csafEntryId}`);
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
+                this.axios
+                  .post(url, {
+                    csafEntryId: this.csafEntryId,
+                    url: this.url,
+                    name: this.name,
+                    //authenticationRequired: this.authenticationRequired,
+                    //username: this.username,
+                    //password:
+                    //  this.password || 'HiddenDecryptedPropertyPlaceholder',
+                    enabled: this.enabled,
+                    //uuid: this.uuid,
+                  })
+                  .then((response) => {
+                    this.csafEntry = response.data;
+                    EventBus.$emit(
+                      'admin:csafSources:rowUpdate',
+                      index,
+                      this.csafEntry,
+                    );
+                    this.$toastr.s(this.$t('message.updated'));
+                  })
+                  .catch((error) => {
+                    this.$toastr.w(this.$t('condition.unsuccessful_action'));
+                  });
+              },
+            },
+          });
+        },
+      },
+      //#############
+      provCols: [
+        {
+          title: 'ID',
+          field: 'csafEntryId',
+          class: 'tight',
+          sortable: true,
+        },
+        {
+          title: 'Name',
+          field: 'name',
+          class: 'tight',
+          sortable: true,
+          formatter: (value, row) => {
+            return row.new === 'New' ? `${value} *` : value;
+          },
+        },
+        {
+          title: 'URL',
+          field: 'url',
+          class: 'tight',
+          sortable: true,
+        },
+        {
+          title: this.$t('admin.enabled'),
+          field: 'enabled',
+          class: 'tight',
+          sortable: true,
+          formatter(value, row, index) {
+            return value === true ? '<i class="fa fa-check-square-o" />' : '';
+          },
+        },
+      ],
+      provData: [],
+      provOpts: {
+        search: true,
+        showColumns: true,
+        showRefresh: true,
+        pagination: true,
+        sidePagination: 'client',
+        queryParamsType: 'pageSize',
+        pageList: '[10, 25, 50, 100]',
+        pageSize: 10,
+        silentSort: false,
+        icons: {
+          refresh: 'fa-refresh',
+        },
+        detailView: true,
+        detailViewIcon: false,
+        detailViewByClick: true,
+        onExpandRow: this.vueFormatterInit,
+        detailFormatter: (index, row) => {
+          return this.vueFormatter({
+            i18n,
+            template: `
+                <b-row class="expanded-row">
+                  <b-col sm="6">
+                    <b-validated-input-group-form-input
+                      id="url" :label="$t('admin.url')"
+                      input-group-size="mb-3" rules="required"
+                      type="url" v-model="url"
+                      autofocus="true"
+                      v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                  </b-col>
+                  <b-col sm="6">
+
+                    <div>
+                      <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{$t('admin.internal')}}
+                    </div>
+                    <div>
+                     <c-switch color="primary" v-model="authenticationRequired" label v-bind="labelIcon" />{{$t('admin.repository_authentication')}}
+                    </div>
+
+                    <div>
+                      <b-validated-input-group-form-input
+                        id="username" :label="$t('admin.username')"
+                        input-group-size="mb-3"
+                        v-model="username"
+                        rules="required"
+                        v-show="authenticationRequired"
+                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                    </div>
+
+                    <div>
+                      <b-validated-input-group-form-input
+                        id="password" :label="$t('admin.password')"
+                        input-group-size="mb-3"
+                        type="password"
+                        v-model="password"
+                        rules="required"
+                        v-show="authenticationRequired"
+                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                    </div>
+
+                    <div>
+                      <b-validated-input-group-form-input
+                        id="interval" :label="$t('admin.update_interval')"
+                        input-group-size="mb-1"
+                        v-model="interval"
+                        rules="required"
+                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                    </div>
+
+                    <div>
+                      <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{$t('admin.enabled')}}
+                    </div>
+
+                    <div style="text-align:right">
+                       <b-button variant="outline-danger" @click="deleteCsafSource">Delete CSAF source</b-button>
+                    </div>
+                  </b-col>
+                </b-row>
+            `,
+            components: {
+              cSwitch,
+              BValidatedInputGroupFormInput,
+            },
+            data() {
+              return {
+                csafEntry: row,
+                csafEntryId: row.csafEntryId,
+                name: row.name,
+                url: row.url,
+                enabled: row.enabled,
+                labelIcon: {
+                  dataOn: '\u2713',
+                  dataOff: '\u2715',
+                },
+              };
+            },
+            watch: {
+              enabled() {
+                this.updateCsafSource();
+              },
+            },
+            methods: {
+              deleteCsafSource: function () {
+                console.log(`delete csaf source ${this.csafEntryId}`);
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}/${this.csafEntryId}`;
+                this.axios
+                  .delete(url)
+                  .then((response) => {
+                    EventBus.$emit('admin:csafSources:rowDeleted', index);
+                    this.$toastr.s(this.$t('admin.repository_deleted'));
+                  })
+                  .catch((error) => {
+                    this.$toastr.w(this.$t('condition.unsuccessful_action'));
+                  });
+              },
+              updateCsafSource: function () {
+                console.log(`update entry ${this.csafEntryId}`);
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
                 this.axios
                   .post(url, {
                     csafEntryId: this.csafEntryId,
