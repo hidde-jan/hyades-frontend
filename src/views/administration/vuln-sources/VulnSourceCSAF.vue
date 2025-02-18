@@ -86,21 +86,6 @@
               <b-card-body>
                 <div id="repositoryToolbar" class="bs-table-custom-toolbar">
                   <!--<h2>{{ $t('admin.csaf_documents') }}:</h2>-->
-                  <b-input-group>
-                    <b-form-input
-                      placeholder="Search inside documents"
-                      v-model="searchTerm"
-                    ></b-form-input>
-                    <b-input-group-append>
-                      <b-button variant="outline-primary" @click="search(searchTerm)">
-                        {{ $t('message.search') }}
-                      </b-button>
-                      <b-button variant="outline-secondary" @click="resetSearch">
-                        {{ $t('message.reset') }}
-                      </b-button>
-                    </b-input-group-append>
-                  </b-input-group>
-                  <hr style="border: none; height: 1px; background-color: #007bff; margin: 10px 0;" />
                   <b-button
                     size="md"
                     variant="outline-primary"
@@ -801,22 +786,6 @@ export default {
         .catch((error) => {
           this.$toastr.w(this.$t('condition.unsuccessful_action'));
         });
-    },
-    search(term) {
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/${term}`;
-      this.axios
-        .get(url)
-        .then((response) => {
-          this.$toastr.s(this.$t('admin.repository_deleted'));
-          return response.toString();
-        })
-        .catch((error) => {
-          this.$toastr.w(this.$t('condition.unsuccessful_action'));
-        });
-      //TODO: respone to table
-    },
-    resetSearch() {
-      //TODO: Reset search
     },
     apiUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
