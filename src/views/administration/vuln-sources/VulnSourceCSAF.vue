@@ -387,15 +387,6 @@ export default {
                     </div>
 
                     <div>
-                      <b-validated-input-group-form-input
-                        id="interval" :label="$t('admin.update_interval')"
-                        input-group-size="mb-1"
-                        v-model="interval"
-                        rules="required"
-                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
-                    </div>
-
-                    <div>
                       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{$t('admin.enabled')}}
                     </div>
 
@@ -540,15 +531,6 @@ export default {
 
                     <div>
                       <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{$t('admin.internal')}}
-                    </div>
-
-                    <div>
-                      <b-validated-input-group-form-input
-                        id="interval" :label="$t('admin.update_interval')"
-                        input-group-size="mb-1"
-                        v-model="interval"
-                        rules="required"
-                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
                     </div>
 
                     <div>

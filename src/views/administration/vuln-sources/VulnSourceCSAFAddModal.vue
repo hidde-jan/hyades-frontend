@@ -35,16 +35,6 @@
       }}
     </div>
 
-    <div>
-      <b-validated-input-group-form-input
-        id="interval"
-        :label="$t('admin.update_interval')"
-        input-group-size="mb-1"
-        v-model="interval"
-        rules="required"
-      />
-    </div>
-
     <hr />
 
     <template v-slot:modal-footer="{ cancel }">
@@ -86,7 +76,6 @@ export default {
       initialRepositoryType: null,
       internal: false,
       enabled: true,
-      interval: null,
       labelIcon: {
         dataOn: '\u2713',
         dataOff: '\u2715',
