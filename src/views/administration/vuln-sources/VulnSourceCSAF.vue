@@ -206,7 +206,7 @@ export default {
         },
         {
           title: 'ID',
-          field: 'csafEntryId',
+          field: 'entryId',
           sortable: true,
         },
         {
@@ -265,7 +265,7 @@ export default {
         },
         {
           title: 'ID',
-          field: 'csafEntryId',
+          field: 'entryId',
           sortable: true,
         },
         {
@@ -320,7 +320,7 @@ export default {
       srcCols: [
         {
           title: 'ID',
-          field: 'csafEntryId',
+          field: 'entryId',
           class: 'tight',
           sortable: true,
         },
@@ -336,6 +336,12 @@ export default {
         {
           title: 'URL',
           field: 'url',
+          class: 'tight',
+          sortable: true,
+        },
+        {
+          title: 'Last fetched',
+          field: 'lastFetched',
           class: 'tight',
           sortable: true,
         },
@@ -467,7 +473,7 @@ export default {
       provCols: [
         {
           title: 'ID',
-          field: 'csafEntryId',
+          field: 'entryId',
           class: 'tight',
           sortable: true,
         },
@@ -486,6 +492,13 @@ export default {
           class: 'tight',
           sortable: true,
         },
+        {
+          title: 'Last fetched',
+          field: 'lastFetched',
+          class: 'tight',
+          sortable: true,
+        },
+
         {
           title: this.$t('admin.enabled'),
           field: 'enabled',
@@ -735,7 +748,7 @@ export default {
     apiUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
     },
-    apiProvidersUrl: function () { // Füge diese Funktion hinzu
+    apiProvidersUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
     },
     apiDocsUrl: function () {
@@ -753,7 +766,7 @@ export default {
     },
     refreshCsafProvidersTable: function () {
       this.$refs.table_providers.refresh({
-        url: this.apiProvidersUrl(), // Stelle sicher, dass der richtige Endpunkt verwendet wird
+        url: this.apiProvidersUrl(),
         pageNumber: 1,
         silent: true,
       });
@@ -807,7 +820,7 @@ export default {
     updateProvidersTable: function () {
       this.axios.get(this.apiProvidersUrl()).then((response) => {
         console.log(response);
-        this.provData = response; // Stelle sicher, dass hier die Daten zugewiesen werden
+        this.provData = response;
         this.$toastr.s('Csaf providers updated');
       });
     },
