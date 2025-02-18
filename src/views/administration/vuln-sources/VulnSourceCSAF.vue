@@ -735,6 +735,9 @@ export default {
     apiUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
     },
+    apiProvidersUrl: function () { // Füge diese Funktion hinzu
+      return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
+    },
     apiDocsUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}`;
     },
@@ -744,6 +747,13 @@ export default {
     refreshCsafSourcesTable: function () {
       this.$refs.table_sources.refresh({
         url: this.apiUrl(),
+        pageNumber: 1,
+        silent: true,
+      });
+    },
+    refreshCsafProvidersTable: function () {
+      this.$refs.table_providers.refresh({
+        url: this.apiProvidersUrl(), // Stelle sicher, dass der richtige Endpunkt verwendet wird
         pageNumber: 1,
         silent: true,
       });
@@ -794,6 +804,13 @@ export default {
         this.$toastr.s('Csaf sources updated');
       });
     },
+    updateProvidersTable: function () {
+      this.axios.get(this.apiProvidersUrl()).then((response) => {
+        console.log(response);
+        this.provData = response; // Stelle sicher, dass hier die Daten zugewiesen werden
+        this.$toastr.s('Csaf providers updated');
+      });
+    },
     //TODO: find correct endpoint
     updateDocumentsTable: function () {
       this.axios.get(this.apiUrl()).then((response) => {
@@ -822,6 +839,7 @@ export default {
         }
       }
       this.refreshCsafSourcesTable();
+      this.refreshCsafProvidersTable();
       this.refreshCsafDocumentsTable();
       this.refreshCsafSuggestedTable();
       this.configInitialized = true;
