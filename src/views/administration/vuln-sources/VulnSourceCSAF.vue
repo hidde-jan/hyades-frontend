@@ -23,14 +23,6 @@
                   <b-button
                     size="md"
                     variant="outline-primary"
-                    v-b-modal.vulnSourceCSAFAddModal
-                  >
-                    <span class="fa fa-plus"></span>
-                    {{ $t('admin.add_source') }}
-                  </b-button>
-                  <b-button
-                    size="md"
-                    variant="outline-primary"
                     v-b-modal.vulnSourceCSAFUpload
                   >
                     <span class="fa fa-upload"></span>
@@ -45,8 +37,17 @@
                     {{ $t('admin.trigger_all') }}
                   </b-button>
                 </div>
-
+                <hr style="border: none; height: 1px; background-color: #007bff; margin: 10px 0;" />
                 <h4>{{ $t('admin.csaf_aggregators') }}</h4>
+                <b-button
+                  size="md"
+                  variant="outline-primary"
+                  @click="$root.$emit('setModalTitle', $t('admin.add_aggregator'))"
+                  v-b-modal.vulnSourceCSAFAddModal
+                >
+                  <span class="fa fa-plus"></span>
+                  {{ $t('admin.add_aggregator') }}
+                </b-button>
                 <bootstrap-table
                   ref="table_sources"
                   :columns="srcCols"
@@ -54,7 +55,17 @@
                   :options="srcOpts"
                 >
                 </bootstrap-table>
+                <hr style="border: none; height: 1px; background-color: #007bff; margin: 10px 0;" />
                 <h4>{{ $t('admin.csaf_providers') }}</h4>
+                <b-button
+                  size="md"
+                  variant="outline-primary"
+                  @click="$root.$emit('setModalTitle', $t('admin.add_provider'))"
+                  v-b-modal.vulnSourceCSAFAddModal
+                >
+                  <span class="fa fa-plus"></span>
+                  {{ $t('admin.add_provider') }}
+                </b-button>
                 <bootstrap-table
                   ref="table_providers"
                   :columns="provCols"
@@ -62,6 +73,7 @@
                   :options="provOpts"
                 >
                 </bootstrap-table>
+                <hr style="border: none; height: 1px; background-color: #007bff; margin: 10px 0;" />
                 <h4>{{ $t('admin.suggested_discovery_sources') }}</h4>
                 <bootstrap-table
                   ref="table_suggested"
@@ -373,30 +385,6 @@ export default {
                     <div>
                       <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{$t('admin.internal')}}
                     </div>
-                    <div>
-                     <c-switch color="primary" v-model="authenticationRequired" label v-bind="labelIcon" />{{$t('admin.repository_authentication')}}
-                    </div>
-
-                    <div>
-                      <b-validated-input-group-form-input
-                        id="username" :label="$t('admin.username')"
-                        input-group-size="mb-3"
-                        v-model="username"
-                        rules="required"
-                        v-show="authenticationRequired"
-                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
-                    </div>
-
-                    <div>
-                      <b-validated-input-group-form-input
-                        id="password" :label="$t('admin.password')"
-                        input-group-size="mb-3"
-                        type="password"
-                        v-model="password"
-                        rules="required"
-                        v-show="authenticationRequired"
-                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
-                    </div>
 
                     <div>
                       <b-validated-input-group-form-input
@@ -485,7 +473,6 @@ export default {
           });
         },
       },
-      //#############
       provCols: [
         {
           title: 'ID',
@@ -553,30 +540,6 @@ export default {
 
                     <div>
                       <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{$t('admin.internal')}}
-                    </div>
-                    <div>
-                     <c-switch color="primary" v-model="authenticationRequired" label v-bind="labelIcon" />{{$t('admin.repository_authentication')}}
-                    </div>
-
-                    <div>
-                      <b-validated-input-group-form-input
-                        id="username" :label="$t('admin.username')"
-                        input-group-size="mb-3"
-                        v-model="username"
-                        rules="required"
-                        v-show="authenticationRequired"
-                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
-                    </div>
-
-                    <div>
-                      <b-validated-input-group-form-input
-                        id="password" :label="$t('admin.password')"
-                        input-group-size="mb-3"
-                        type="password"
-                        v-model="password"
-                        rules="required"
-                        v-show="authenticationRequired"
-                        v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
                     </div>
 
                     <div>

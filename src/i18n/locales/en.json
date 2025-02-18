@@ -7,6 +7,8 @@
   "admin": {
     "add_source": "Add Source",
     "add_document": "Add Document",
+    "add_aggregator" : "Add Aggregator",
+    "add_provider" : "Add Provider",
     "access_management": "Access Management",
     "alert_created": "Alert created",
     "alert_deleted": "Alert deleted",

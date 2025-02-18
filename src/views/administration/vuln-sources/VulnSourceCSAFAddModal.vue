@@ -5,7 +5,7 @@
     size="md"
     hide-header-close
     no-stacking
-    :title="$t('admin.add_source')"
+    :title="modalTitle"
   >
     <b-validated-input-group-form-input
       id="name"
@@ -24,42 +24,10 @@
     />
 
     <div>
-      <b-form-group :label="$t('admin.repository_type')">
-        <b-form-radio-group v-model="repositoryType" :options="radioOptions" />
-      </b-form-group>
-    </div>
-
-    <div>
       <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{
         $t('admin.internal')
       }}
     </div>
-    <div>
-      <c-switch
-        color="primary"
-        v-model="repository_authentication"
-        label
-        v-bind="labelIcon"
-      />{{ $t('admin.repository_authentication') }}
-    </div>
-    <b-validated-input-group-form-input
-      id="username"
-      :label="$t('admin.username')"
-      input-group-size="mb-3"
-      v-model="username"
-      rules="required"
-      v-show="repository_authentication"
-    />
-
-    <b-validated-input-group-form-input
-      id="password"
-      :label="$t('admin.password')"
-      input-group-size="mb-3"
-      type="password"
-      rules="required"
-      v-model="password"
-      v-show="repository_authentication"
-    />
 
     <div>
       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{
@@ -106,47 +74,41 @@ export default {
     BValidatedInputGroupFormInput,
   },
   created() {
-    this.initialRepositoryType = this.type;
-    this.repositoryType = this.type;
+    this.$root.$on('setModalTitle', (title) => {
+      this.modalTitle = title;
+    });
   },
   data() {
     return {
       name: null,
+      modalTitle: '',
       url: null,
       initialRepositoryType: null,
       internal: false,
-      repository_authentication: false,
-      username: null,
-      password: null,
       enabled: true,
       interval: null,
       labelIcon: {
         dataOn: '\u2713',
         dataOff: '\u2715',
       },
-      repositoryType: 'aggregator', // Standardwert
-      radioOptions: [
-        { text: 'Aggregator', value: 'aggregator' },
-        { text: 'Provider', value: 'provider' },
-      ],
     };
   },
   methods: {
     createCsafSource: function () {
       let url ='';
-      if (this.repositoryType === 'aggregator') {
+      const title = this.modalTitle;
+      if (title === this.$t('admin.add_aggregator')) {
         url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
+        console.log('Aggregator');
       } else {
         url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
+        console.log('Provider');
       }
       this.axios
         .put(url, {
           name: this.name,
           url: this.url,
           //internal: this.internal,
-          //authenticationRequired: this.repository_authentication,
-          //username: this.username,
-          //password: this.password || null,
           enabled: this.enabled,
         })
         .then((response) => {
@@ -165,10 +127,7 @@ export default {
       this.name = null;
       this.url = null;
       //this.internal = false;
-      //this.username = null;
-      //this.password = null;
       this.enabled = true;
-      //this.repository_authentication = false;
     },
   },
 };
