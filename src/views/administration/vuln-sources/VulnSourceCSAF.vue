@@ -206,7 +206,7 @@ export default {
         },
         {
           title: 'ID',
-          field: 'entryId',
+          field: 'id',
           sortable: true,
         },
         {
@@ -228,7 +228,7 @@ export default {
           title: 'Actions',
           field: 'actions',
           formatter: (value, row) => {
-            return `<button class="btn btn-primary" id="rec-${row.csafEntryId}" >  <span class="fa fa-plus"></span> Add</button>`;
+            return `<button class="btn btn-primary" id="rec-${row.id}" >  <span class="fa fa-plus"></span> Add</button>`;
           },
         },
       ],
@@ -265,7 +265,7 @@ export default {
         },
         {
           title: 'ID',
-          field: 'entryId',
+          field: 'id',
           sortable: true,
         },
         {
@@ -301,14 +301,14 @@ export default {
           title: 'Actions',
           field: 'actions',
           formatter: (value, row) => {
-            return `<button class="btn btn-primary" id="doc-${row.csafEntryId}"> <span class="fa fa-search-plus"></span> View Details</button>`;
+            return `<button class="btn btn-primary" id="doc-${row.id}"> <span class="fa fa-search-plus"></span> View Details</button>`;
           },
         },
       ],
       docData: [
         // for tests, delete later
-        //{ csafEntryId: 1, vendor: 'Vendor 1', version: '1.0', last_updated: '12-07-24'},
-        //{ csafEntryId: 2, vendor: 'Vendor 2', version: '1.3', last_updated: '06-03-24'},
+        //{ csafid: 1, vendor: 'Vendor 1', version: '1.0', last_updated: '12-07-24'},
+        //{ csafid: 2, vendor: 'Vendor 2', version: '1.3', last_updated: '06-03-24'},
       ],
       docOpts: {
         search: true,
@@ -327,7 +327,7 @@ export default {
       srcCols: [
         {
           title: 'ID',
-          field: 'entryId',
+          field: 'id',
           class: 'tight',
           sortable: true,
         },
@@ -423,7 +423,7 @@ export default {
             data() {
               return {
                 csafEntry: row,
-                csafEntryId: row.csafEntryId,
+                id: row.id,
                 name: row.name,
                 url: row.url,
                 enabled: row.enabled,
@@ -440,8 +440,8 @@ export default {
             },
             methods: {
               deleteCsafSource: function () {
-                console.log(`delete csaf source ${this.csafEntryId}`);
-                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}/${this.csafEntryId}`;
+                console.log(`delete csaf source ${this.id}`);
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}/${this.id}`;
                 this.axios
                   .delete(url)
                   .then((response) => {
@@ -453,11 +453,11 @@ export default {
                   });
               },
               updateCsafSource: function () {
-                console.log(`update entry ${this.csafEntryId}`);
+                console.log(`update entry ${this.id}`);
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
                 this.axios
                   .post(url, {
-                    csafEntryId: this.csafEntryId,
+                    id: this.id,
                     url: this.url,
                     name: this.name,
                     //authenticationRequired: this.authenticationRequired,
@@ -487,7 +487,7 @@ export default {
       provCols: [
         {
           title: 'ID',
-          field: 'entryId',
+          field: 'id',
           class: 'tight',
           sortable: true,
         },
@@ -584,7 +584,7 @@ export default {
             data() {
               return {
                 csafEntry: row,
-                csafEntryId: row.csafEntryId,
+                id: row.id,
                 name: row.name,
                 url: row.url,
                 enabled: row.enabled,
@@ -601,8 +601,8 @@ export default {
             },
             methods: {
               deleteCsafSource: function () {
-                console.log(`delete csaf source ${this.csafEntryId}`);
-                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}/${this.csafEntryId}`;
+                console.log(`delete csaf source ${this.id}`);
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}/${this.id}`;
                 this.axios
                   .delete(url)
                   .then((response) => {
@@ -614,11 +614,11 @@ export default {
                   });
               },
               updateCsafSource: function () {
-                console.log(`update entry ${this.csafEntryId}`);
+                console.log(`update entry ${this.id}`);
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
                 this.axios
                   .post(url, {
-                    csafEntryId: this.csafEntryId,
+                    id: this.id,
                     url: this.url,
                     name: this.name,
                     //authenticationRequired: this.authenticationRequired,
@@ -666,7 +666,7 @@ export default {
     showDoc(docId) {
       console.log('docData:', this.docData);
       console.log('ID:', docId);
-      const row = this.docData.find((item) => item.csafEntryId === docId);
+      const row = this.docData.find((item) => item.id === docId);
       console.log('Show doc:', row);
       this.detailTitle = row.name;
       this.detailContent = this.getDocument(docId);
@@ -679,7 +679,7 @@ export default {
       console.log('recData:', this.srcData);
       console.log(`id clicked: ${id}`);
       const row = this.recData.find(
-        (item) => item.csafEntryId.toString() === id.toString(),
+        (item) => item.cid.toString() === id.toString(),
       );
       console.log('Row added:', row);
       // TODO: Add clicked suggested source to sources
@@ -691,9 +691,9 @@ export default {
       const selectedRows = this.$refs.table_documents.getSelections();
       console.log('Selected rows:', selectedRows);
       this.compareLeftTitle = selectedRows[0].name;
-      this.compareLeftContent = this.getDocument(selectedRows[0].csafEntryId);
+      this.compareLeftContent = this.getDocument(selectedRows[0].id);
       this.compareRightTitle = selectedRows[1].name;
-      this.compareRightContent = this.getDocument(selectedRows[1].csafEntryId);
+      this.compareRightContent = this.getDocument(selectedRows[1].id);
       // for tests:
       //this.compareLeftTitle = 'CSAF 1';
       //this.compareLeftContent = 'CSAF CSAF CSAF';
@@ -714,7 +714,7 @@ export default {
       }
 
       const deletePromises = selectedRows.map((row) => {
-        const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/${row.csafEntryId}`;
+        const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/${row.id}`;
         return this.axios
           .delete(url)
           .then((response) => {
