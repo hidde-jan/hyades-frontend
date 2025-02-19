@@ -430,6 +430,7 @@ export default {
 
                     <div style="text-align:right">
                        <b-button variant="outline-danger" @click="deleteCsafSource">Delete CSAF source</b-button>
+                       <b-button variant="outline-danger" @click="resetFetched">Reset last fetched</b-button>
                     </div>
                   </b-col>
                 </b-row>
@@ -469,6 +470,12 @@ export default {
                   .catch((error) => {
                     this.$toastr.w(this.$t('condition.unsuccessful_action'));
                   });
+              },
+              resetFetched() {
+                console.log('reset:',this.id);
+                this.lastFetched = null;
+                console.log('row:',this.name);
+                this.updateCsafSource();
               },
               updateCsafSource: function () {
                 console.log(`update entry ${this.id}`);
@@ -590,7 +597,8 @@ export default {
                     </div>
 
                     <div style="text-align:right">
-                       <b-button variant="outline-danger" @click="deleteCsafSource">Delete CSAF source</b-button>
+                      <b-button variant="outline-danger" @click="deleteCsafSource">Delete CSAF source</b-button>
+                      <b-button variant="outline-danger" @click="resetFetched">Reset last fetched</b-button>
                     </div>
                   </b-col>
                 </b-row>
@@ -630,6 +638,12 @@ export default {
                   .catch((error) => {
                     this.$toastr.w(this.$t('condition.unsuccessful_action'));
                   });
+              },
+              resetFetched() {
+                console.log('reset:',this.id);
+                this.lastFetched = null;
+                console.log('row:',this.name);
+                this.updateCsafSource();
               },
               updateCsafSource: function () {
                 console.log(`update entry ${this.id}`);
