@@ -114,14 +114,6 @@
                     <span class="fa fa-trash"></span>
                     {{ $t('admin.delete_selected') }}
                   </b-button>
-                  <b-button
-                    size="md"
-                    variant="outline-primary"
-                    @click="markReadDocuments"
-                  >
-                    <span class="fa fa-check"></span>
-                    {{ $t('admin.mark_selected_read') }}
-                  </b-button>
                 </div>
                 <bootstrap-table
                   ref="table_documents"
@@ -131,6 +123,14 @@
                   data-click-to-select="true"
                 >
                 </bootstrap-table>
+                <b-button
+                  size="md"
+                  variant="outline-primary"
+                  @click="markReadDocuments"
+                >
+                  <span class="fa fa-check"></span>
+                  {{ $t('admin.mark_selected_read') }}
+                </b-button>
               </b-card-body>
             </b-tab>
           </b-tabs>
@@ -214,7 +214,7 @@ export default {
           field: 'name',
           sortable: true,
           formatter: (value, row) => {
-            return row.new === 'New' ? `${value} *` : value;
+            return row.seen === false ? `<strong>${value} *</strong>` : value;
           },
         },
         {
@@ -223,6 +223,11 @@ export default {
           class: 'tight',
           sortable: true,
           width: '350px',
+        },
+        {
+          title: 'Read',
+          field: 'seen',
+          sortable: true,
         },
         {
           title: 'Actions',
@@ -248,6 +253,8 @@ export default {
         pageList: '[10, 25, 50, 100]',
         pageSize: 10,
         silentSort: false,
+        sortName: 'seen',
+        sortOrder: 'asc',
         icons: {
           refresh: 'fa-refresh',
         },
@@ -272,6 +279,9 @@ export default {
           title: 'Name',
           field: 'name',
           sortable: true,
+          formatter: (value, row) => {
+            return row.seen === false ? `<strong>${value} *</strong>` : value;
+          },
         },
         {
           title: 'Provider',
@@ -296,6 +306,12 @@ export default {
             const date = new Date(Date.now() - value * 1000);
             return date.toLocaleString();
           },
+
+        },
+        {
+          title: 'Read',
+          field: 'seen',
+          sortable: true,
         },
         {
           title: 'Actions',
@@ -320,6 +336,8 @@ export default {
         pageList: '[10, 25, 50, 100]',
         pageSize: 10,
         silentSort: false,
+        sortName: 'seen',
+        sortOrder: 'asc',
         icons: {
           refresh: 'fa-refresh',
         },
@@ -755,7 +773,12 @@ export default {
     markReadSuggestions() {
       const selectedRows = this.$refs.table_suggested.getSelections();
       console.log('Read:', selectedRows);
-      //TODO: mark as read, which api endpoint?
+      if (selectedRows.length > 0) {
+        selectedRows.forEach(row => {
+          row.seen = true;
+          this.updateCsafSource(row);
+        });
+      }
       //TODO: refresh tables
     },
     markReadDocuments() {
