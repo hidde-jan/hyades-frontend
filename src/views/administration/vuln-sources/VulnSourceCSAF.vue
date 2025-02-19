@@ -676,16 +676,38 @@ export default {
       this.$bvModal.show('vulnSourceCSAFViewDocModal');
     },
     handleAdd(id) {
-      console.log('recData:', this.srcData);
       console.log(`id clicked: ${id}`);
-      const row = this.recData.find(
-        (item) => item.cid.toString() === id.toString(),
-      );
-      console.log('Row added:', row);
-      // TODO: Add clicked suggested source to sources
-      // TODO: Remove clicked suggested source from suggested
-      //this.refreshCsafSourcesTable();
+      var addRow = this.$refs.table_suggested.getData().find(item => item.id.toString() === id.toString());
+      addRow.discovery=false;
+      console.log('Row added:', addRow);
+      this.updateCsafSource(addRow);
       //this.refreshCsafSuggestedTable();
+    },
+    updateCsafSource(prow) {
+      console.log(`update entry ${prow.id}`);
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`; //change to DISCOVERY
+      this.axios
+        .post(url, {
+          id: prow.id,
+          url: prow.url,
+          name: prow.name,
+          discovery: prow.discovery,
+          enabled: prow.enabled,
+          fetchInterval: prow.fetchInterval,
+          aggregator: prow.aggregator,
+        })
+        .then((response) => {
+          this.csafEntry = response.data;
+          EventBus.$emit(
+            'admin:csafSources:rowUpdate',
+            row.id,
+            this.csafEntry,
+          );
+          this.$toastr.s(this.$t('message.updated'));
+        })
+        .catch((error) => {
+          this.$toastr.w(this.$t('condition.unsuccessful_action'));
+        });
     },
     openCompare() {
       const selectedRows = this.$refs.table_documents.getSelections();
