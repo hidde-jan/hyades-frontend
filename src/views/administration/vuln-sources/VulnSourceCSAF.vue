@@ -274,8 +274,8 @@ export default {
           sortable: true,
         },
         {
-          title: 'Vendor',
-          field: 'vendor',
+          title: 'Provider',
+          field: 'provider',
           sortable: true,
         },
         {
@@ -285,10 +285,17 @@ export default {
           sortable: true,
         },
         {
-          title: 'Last updated',
-          field: 'last_updated',
+          title: 'Last fetched',
+          field: 'lastFetched',
           class: 'tight',
           sortable: true,
+          formatter: (value) => {
+            if (!value || value <= 0) {
+              return this.$t('admin.never');
+            }
+            const date = new Date(Date.now() - value * 1000);
+            return date.toLocaleString();
+          },
         },
         {
           title: 'Actions',
@@ -344,6 +351,13 @@ export default {
           field: 'lastFetched',
           class: 'tight',
           sortable: true,
+          formatter: (value) => {
+            if (!value || value <= 0) {
+              return this.$t('admin.never');
+            }
+            const date = new Date(Date.now() - value * 1000);
+            return date.toLocaleString();
+          },
         },
         {
           title: this.$t('admin.enabled'),
@@ -497,6 +511,13 @@ export default {
           field: 'lastFetched',
           class: 'tight',
           sortable: true,
+          formatter: (value) => {
+            if (!value || value <= 0) {
+              return this.$t('admin.never');
+            }
+            const date = new Date(Date.now() - value * 1000);
+            return date.toLocaleString();
+          },
         },
 
         {
