@@ -793,13 +793,18 @@ export default {
           this.updateCsafSource(row);
         });
       }
-      //TODO: refresh tables
+      this.refreshCsafSuggestedTable()
     },
     markReadDocuments() {
       const selectedRows = this.$refs.table_documents.getSelections();
       console.log('Read:', selectedRows);
-      //TODO: mark as read, which api endpoint?
-      //TODO: refresh tables
+      if (selectedRows.length > 0) {
+        selectedRows.forEach(row => {
+          row.seen = true;
+          this.updateCsafSource(row);
+        });
+      }
+      this.refreshCsafDocumentsTable();
     },
     triggerAll() {
       console.log('Trigger all');
