@@ -331,7 +331,7 @@ export default {
         showColumns: true,
         showRefresh: true,
         pagination: true,
-        sidePagination: 'client',
+        sidePagination: 'server',
         queryParamsType: 'pageSize',
         pageList: '[10, 25, 50, 100]',
         pageSize: 10,
