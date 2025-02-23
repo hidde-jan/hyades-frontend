@@ -696,11 +696,10 @@ export default {
   },
   methods: {
     showDoc(docId) {
-      console.log('docData:', this.docData);
       console.log('ID:', docId);
-      const row = this.docData.find((item) => item.id === docId);
-      console.log('Show doc:', row);
-      this.detailTitle = row.name;
+      const srow = this.$refs.table_documents.getData().find(item => item.id.toString() === docId.toString());
+      console.log('Show doc:', srow);
+      this.detailTitle = srow.name;
       this.detailContent = this.getDocument(docId);
       //for tests
       //this.detailTitle = 'test';
