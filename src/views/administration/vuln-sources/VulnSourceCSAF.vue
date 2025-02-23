@@ -225,6 +225,14 @@ export default {
           width: '350px',
         },
         {
+          title: 'Type',
+          field: 'aggregator',
+          sortable: true,
+          formatter: (value) => {
+            return value ? 'Aggregator' : 'Provider';
+          },
+        },
+        {
           title: 'Read',
           field: 'seen',
           sortable: true,
