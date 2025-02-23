@@ -65,7 +65,7 @@ export default {
 
         try {
           let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}`;
-          const response = await this.axios.putForm(url, formData);
+          const response = await this.axios.postForm(url, formData);
 
           console.log('Upload succeeded:', response.data);
           cancel();
