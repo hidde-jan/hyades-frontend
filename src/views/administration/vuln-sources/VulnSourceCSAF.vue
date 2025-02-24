@@ -185,9 +185,9 @@ export default {
   data() {
     return {
       compareLeftTitle: '',
-      compareLeftContent: '',
+      compareLeftContent: null,
       compareRightTitle: '',
-      compareRightContent: '',
+      compareRightContent: null,
       detailTitle: '',
       detailContent: null,
       searchTerm: '',
@@ -733,13 +733,13 @@ export default {
           this.$toastr.w(this.$t('condition.unsuccessful_action'));
         });
     },
-    openCompare() {
+    async openCompare() {
       const selectedRows = this.$refs.table_documents.getSelections();
       console.log('Selected rows:', selectedRows);
       this.compareLeftTitle = selectedRows[0].name;
-      this.compareLeftContent = this.getDocument(selectedRows[0].id);
+      this.compareLeftContent = await this.getDocument(selectedRows[0].id);
       this.compareRightTitle = selectedRows[1].name;
-      this.compareRightContent = this.getDocument(selectedRows[1].id);
+      this.compareRightContent = await this.getDocument(selectedRows[1].id);
       // for tests:
       //this.compareLeftTitle = 'CSAF 1';
       //this.compareLeftContent = 'CSAF CSAF CSAF';

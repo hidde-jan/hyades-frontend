@@ -9,14 +9,15 @@
 
     <div>
       <CodeDiff
-        :old-string="leftContent"
-        :new-string="rightContent"
+        :old-string="JSON.stringify(leftContent,null,2)"
+        :new-string="JSON.stringify(rightContent,null,2)"
         output-format="side-by-side"
         :filename="leftTitle"
         :newFilename="rightTitle"
         language="plaintext"
         :hideStat=false
         theme="dark"
+        :forceInlineComparison=false
       />
     </div>
 
@@ -36,9 +37,9 @@ export default {
   name: 'vulnSourceCSAFCompare',
   props: {
     leftTitle: String,
-    leftContent: String,
+    leftContent: Object,
     rightTitle: String,
-    rightContent: String,
+    rightContent: Object,
   },
   components: {
     CodeDiff
