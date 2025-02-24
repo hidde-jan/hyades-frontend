@@ -765,8 +765,17 @@ export default {
       console.log('Read:', selectedRows);
       if (selectedRows.length > 0) {
         selectedRows.forEach(row => {
-          row.seen = true;
-          this.updateCsafSource(row);
+          let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/seen/${row.id}`;
+          this.axios
+            .post(url, { id: row.id })
+            .then((response) => {
+              console.log(`Document ${row.id} marked as read:`, response.data);
+              this.$toastr.s(this.$t('message.document_read'));
+            })
+            .catch((error) => {
+              console.error(`Error marking document ${row.id} as read:`, error);
+              this.$toastr.w(this.$t('condition.unsuccessful_action'));
+            });
         });
       }
       this.refreshCsafDocumentsTable();
