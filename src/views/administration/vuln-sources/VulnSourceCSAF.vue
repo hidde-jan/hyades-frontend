@@ -718,6 +718,7 @@ export default {
           enabled: prow.enabled,
           fetchInterval: prow.fetchInterval,
           aggregator: prow.aggregator,
+          seen: prow.seen,
         });
         console.log('API Response:', response);
         this.csafEntry = response.data;
@@ -777,9 +778,9 @@ export default {
       const selectedRows = this.$refs.table_suggested.getSelections();
       console.log('Read:', selectedRows);
       if (selectedRows.length > 0) {
-        selectedRows.forEach(row => {
-          row.seen = true;
-          this.updateCsafSource(row);
+        selectedRows.forEach(prow => {
+          prow.seen = true;
+          this.updateCsafSource(prow);
         });
       }
       this.refreshCsafSuggestedTable()
