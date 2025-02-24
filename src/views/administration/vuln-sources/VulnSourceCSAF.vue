@@ -620,7 +620,7 @@ export default {
             methods: {
               deleteCsafSource: function () {
                 console.log(`delete csaf source ${this.id}`);
-                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}/${this.id}`;
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}/${this.id}`;
                 this.axios
                   .delete(url)
                   .then((response) => {
@@ -705,7 +705,6 @@ export default {
       addRow.discovery=false;
       console.log('Row added:', addRow);
       this.updateCsafSource(addRow);
-      //this.refreshCsafSuggestedTable();
     },
     async updateCsafSource(prow) {
       console.log(`update entry ${prow.id}`);
