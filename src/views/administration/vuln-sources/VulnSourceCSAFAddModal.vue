@@ -88,16 +88,13 @@ export default {
       const title = this.modalTitle;
       if (title === this.$t('admin.add_aggregator')) {
         url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
-        console.log('Aggregator');
       } else {
         url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
-        console.log('Provider');
       }
       this.axios
         .put(url, {
           name: this.name,
           url: this.url,
-          //internal: this.internal,
           enabled: this.enabled,
         })
         .then((response) => {
@@ -115,7 +112,6 @@ export default {
     resetValues: function () {
       this.name = null;
       this.url = null;
-      //this.internal = false;
       this.enabled = true;
     },
   },

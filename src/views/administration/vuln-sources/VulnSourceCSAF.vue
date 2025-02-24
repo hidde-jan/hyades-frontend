@@ -191,7 +191,7 @@ export default {
       detailTitle: '',
       detailContent: null,
       searchTerm: '',
-      configInitialized: false, // Wait for retrieving config
+      configInitialized: false,
       vulnsourceEnabled: false,
       vulnsourceToggleInitialized: false,
       labelIcon: {
@@ -238,10 +238,6 @@ export default {
         },
       ],
       recData: [
-        //TODO: Remove when real data available
-        // test data:
-        //{ id: 1, name: 'Example service 2', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json', new: 'New'},
-        //{ id: 2, name: 'Example service 3', url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.json'},
       ],
       recOptions: {
         search: true,
@@ -322,9 +318,6 @@ export default {
         },
       ],
       docData: [
-        // for tests, delete later
-        //{ csafid: 1, vendor: 'Vendor 1', version: '1.0', last_updated: '12-07-24'},
-        //{ csafid: 2, vendor: 'Vendor 2', version: '1.3', last_updated: '06-03-24'},
       ],
       docOpts: {
         search: true,
@@ -481,12 +474,7 @@ export default {
                     id: this.id,
                     url: this.url,
                     name: this.name,
-                    //authenticationRequired: this.authenticationRequired,
-                    //username: this.username,
-                    //password:
-                    //  this.password || 'HiddenDecryptedPropertyPlaceholder',
                     enabled: this.enabled,
-                    //uuid: this.uuid,
                   })
                   .then((response) => {
                     this.csafEntry = response.data;
@@ -645,12 +633,7 @@ export default {
                     id: this.id,
                     url: this.url,
                     name: this.name,
-                    //authenticationRequired: this.authenticationRequired,
-                    //username: this.username,
-                    //password:
-                    //  this.password || 'HiddenDecryptedPropertyPlaceholder',
                     enabled: this.enabled,
-                    //uuid: this.uuid,
                   })
                   .then((response) => {
                     this.csafEntry = response.data;
@@ -694,9 +677,6 @@ export default {
       this.detailTitle = srow.name;
       this.detailContent = await this.getDocument(docId);
       console.log('Document:', this.detailContent);
-      //for tests
-      //this.detailTitle = 'test';
-      //this.detailContent = 'some content';
       this.$bvModal.show('vulnSourceCSAFViewDocModal');
     },
     handleAdd(id) {
@@ -738,11 +718,6 @@ export default {
       this.compareLeftContent = await this.getDocument(selectedRows[0].id);
       this.compareRightTitle = selectedRows[1].name;
       this.compareRightContent = await this.getDocument(selectedRows[1].id);
-      // for tests:
-      //this.compareLeftTitle = 'CSAF 1';
-      //this.compareLeftContent = 'CSAF CSAF CSAF';
-      //this.compareRightTitle = 'CSAF 2';
-      //this.compareRightContent = 'C$AF CSAF CSAF';
       if (selectedRows.length === 2) {
         this.$bvModal.show('vulnSourceCSAFCompareModal');
       } else {
@@ -901,7 +876,6 @@ export default {
         this.$toastr.s('Csaf providers updated');
       });
     },
-    //TODO: find correct endpoint
     updateDocumentsTable: function () {
       this.axios.get(this.apiUrl()).then((response) => {
         console.log(response);
