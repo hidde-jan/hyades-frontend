@@ -61,22 +61,16 @@ export default {
     async upload(cancel) {
       if (this.selectedFile) {
         try {
-          const reader = new FileReader();
-          reader.onload = async (event) => {
-            const jsonContent = event.target.result;
-            let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}`;
-            const response = await this.axios.post(url, jsonContent, {
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-            console.log('Upload succeeded:', response.data);
-            cancel();
-          };
-          reader.onerror = (error) => {
-            console.error('File reading failed:', error);
-          };
-          reader.readAsText(this.selectedFile);
+          const formData = new FormData();
+          formData.append('file', this.selectedFile);
+          let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}`;
+          const response = await this.axios.post(url, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+          console.log('Upload succeeded:', response.data);
+          cancel();
         } catch (error) {
           console.error('Upload failed:', error);
         }
