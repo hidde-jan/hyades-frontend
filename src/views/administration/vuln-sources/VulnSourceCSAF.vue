@@ -707,11 +707,11 @@ export default {
       this.updateCsafSource(addRow);
       //this.refreshCsafSuggestedTable();
     },
-    updateCsafSource(prow) {
+    async updateCsafSource(prow) {
       console.log(`update entry ${prow.id}`);
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`; //change to DISCOVERY
-      this.axios
-        .post(url, {
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
+      try {
+        const response = await this.axios.post(url, {
           id: prow.id,
           url: prow.url,
           name: prow.name,
@@ -719,19 +719,17 @@ export default {
           enabled: prow.enabled,
           fetchInterval: prow.fetchInterval,
           aggregator: prow.aggregator,
-        })
-        .then((response) => {
-          this.csafEntry = response.data;
-          EventBus.$emit(
-            'admin:csafSources:rowUpdate',
-            row.id,
-            this.csafEntry,
-          );
-          this.$toastr.s(this.$t('message.updated'));
-        })
-        .catch((error) => {
-          this.$toastr.w(this.$t('condition.unsuccessful_action'));
         });
+        console.log('API Response:', response);
+        this.csafEntry = response.data;
+        EventBus.$emit('admin:csafSources:rowUpdate', prow.id, this.csafEntry);
+        this.$toastr.s(this.$t('message.updated'));
+        this.refreshCsafSuggestedTable();
+        this.refreshCsafProvidersTable();
+      } catch (error) {
+        console.error('Error during update:', error);
+        this.$toastr.w(this.$t('condition.unsuccessful_action'));
+      }
     },
     async openCompare() {
       const selectedRows = this.$refs.table_documents.getSelections();
