@@ -421,10 +421,6 @@ export default {
                   <b-col sm="6">
 
                     <div>
-                      <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{$t('admin.internal')}}
-                    </div>
-
-                    <div>
                       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{$t('admin.enabled')}}
                     </div>
 
@@ -587,11 +583,7 @@ export default {
                       v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
                   </b-col>
                   <b-col sm="6">
-
-                    <div>
-                      <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{$t('admin.internal')}}
-                    </div>
-
+                    
                     <div>
                       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{$t('admin.enabled')}}
                     </div>
