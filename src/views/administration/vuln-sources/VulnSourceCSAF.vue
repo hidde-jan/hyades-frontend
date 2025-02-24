@@ -284,13 +284,13 @@ export default {
           },
         },
         {
-          title: 'Provider',
-          field: 'provider',
+          title: 'Publisher',
+          field: 'publisherNamespace',
           sortable: true,
         },
         {
           title: 'Version',
-          field: 'version',
+          field: 'trackingVersion',
           class: 'tight',
           sortable: true,
         },
