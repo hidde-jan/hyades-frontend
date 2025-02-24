@@ -189,7 +189,7 @@ export default {
       compareRightTitle: '',
       compareRightContent: '',
       detailTitle: '',
-      detailContent: '',
+      detailContent: null,
       searchTerm: '',
       configInitialized: false, // Wait for retrieving config
       vulnsourceEnabled: false,
@@ -583,7 +583,7 @@ export default {
                       v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
                   </b-col>
                   <b-col sm="6">
-                    
+
                     <div>
                       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{$t('admin.enabled')}}
                     </div>
@@ -687,12 +687,13 @@ export default {
     },
   },
   methods: {
-    showDoc(docId) {
+    async showDoc(docId) {
       console.log('ID:', docId);
       const srow = this.$refs.table_documents.getData().find(item => item.id.toString() === docId.toString());
       console.log('Show doc:', srow);
       this.detailTitle = srow.name;
-      this.detailContent = this.getDocument(docId);
+      this.detailContent = await this.getDocument(docId);
+      console.log('Document:', this.detailContent);
       //for tests
       //this.detailTitle = 'test';
       //this.detailContent = 'some content';
@@ -811,14 +812,16 @@ export default {
     },
     getDocument(docId) {
       let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/${docId}`;
-      this.axios
+      console.log('requesting document:',url);
+      return this.axios
         .get(url)
         .then((response) => {
-          this.$toastr.s(this.$t('admin.repository_deleted'));
-          return response.toString();
+          console.log('received document:', response.data);
+          return response.data
         })
         .catch((error) => {
           this.$toastr.w(this.$t('condition.unsuccessful_action'));
+          return null;
         });
     },
     apiUrl: function () {

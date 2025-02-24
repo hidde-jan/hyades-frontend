@@ -28,7 +28,7 @@ export default {
   name: 'vulnSourceCSAFViewDocModal',
   props: {
     title: String,
-    content: String,
+    content: Object,
   },
   components: {
     VueJsonPretty,
