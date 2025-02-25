@@ -398,6 +398,11 @@ export default {
         detailViewIcon: false,
         detailViewByClick: true,
         onExpandRow: this.vueFormatterInit,
+        onLoadError: (status, res) => {
+          if (status === 403) {
+            alert("You need CSAF_MANAGEMENT permission");
+          }
+        },
         detailFormatter: (index, row) => {
           return this.vueFormatter({
             i18n,
