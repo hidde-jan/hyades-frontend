@@ -22,13 +22,6 @@
       type="url"
       v-model="url"
     />
-
-    <div>
-      <c-switch color="primary" v-model="internal" label v-bind="labelIcon" />{{
-        $t('admin.internal')
-      }}
-    </div>
-
     <div>
       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{
         $t('admin.enabled')
@@ -74,7 +67,6 @@ export default {
       modalTitle: '',
       url: null,
       initialRepositoryType: null,
-      internal: false,
       enabled: true,
       labelIcon: {
         dataOn: '\u2713',
