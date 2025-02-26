@@ -413,9 +413,9 @@ export default {
                 <b-row class="expanded-row">
                   <b-col sm="6">
                     <b-validated-input-group-form-input
-                      id="url" :label="$t('admin.url')"
+                      id="surl" :label="$t('admin.url')"
                       input-group-size="mb-3" rules="required"
-                      type="url" v-model="url"
+                      type="url" v-model="surl"
                       autofocus="true"
                       v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
                   </b-col>
@@ -439,9 +439,9 @@ export default {
             data() {
               return {
                 csafEntry: row,
-                id: row.id,
+                sid: row.id,
                 name: row.name,
-                url: row.url,
+                surl: row.url,
                 enabled: row.enabled,
                 labelIcon: {
                   dataOn: '\u2713',
@@ -456,8 +456,8 @@ export default {
             },
             methods: {
               deleteCsafSource: function () {
-                console.log(`delete csaf source ${this.id}`);
-                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}/${this.id}`;
+                console.log(`delete csaf source ${this.sid}`);
+                let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}/${this.sid}`;
                 this.axios
                   .delete(url)
                   .then((response) => {
@@ -469,17 +469,17 @@ export default {
                   });
               },
               resetFetched() {
-                console.log('reset:',this.id);
+                console.log('reset:',this.sid);
                 this.lastFetched = null;
                 console.log('row:',this.name);
                 this.updateCsafSource();
               },
               updateCsafSource: function () {
-                console.log(`update entry ${this.id}`);
+                console.log(`update entry ${this.sid}`);
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
                 this.axios
                   .post(url, {
-                    id: this.id,
+                    id: this.sid,
                     url: this.url,
                     name: this.name,
                     enabled: this.enabled,
