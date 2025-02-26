@@ -147,6 +147,7 @@
       :rightContent="compareRightContent"
     />
     <vuln-source-c-s-a-f-upload />
+    <vuln-source-c-s-a-f-permission />
     <vuln-source-c-s-a-f-view-doc-modal
       :title="detailTitle"
       :content="detailContent"
@@ -163,6 +164,7 @@ import BValidatedInputGroupFormInput from '../../../forms/BValidatedInputGroupFo
 import VulnSourceCSAFCompare from './VulnSourceCSAFCompare.vue';
 import VulnSourceCSAFUpload from './VulnSourceCSAFUpload.vue';
 import VulnSourceCSAFViewDocModal from './VulnSourceCSAFViewDocModal.vue';
+import VulnSourceCSAFPermission from './VulnSourceCSAFPermission.vue';
 import i18n from '../../../i18n';
 import bootstrapTableMixin from '../../../mixins/bootstrapTableMixin';
 import EventBus from '../../../shared/eventbus';
@@ -181,6 +183,7 @@ export default {
     VulnSourceCSAFCompare,
     VulnSourceCSAFUpload,
     VulnSourceCSAFViewDocModal,
+    VulnSourceCSAFPermission,
   },
   data() {
     return {
@@ -400,7 +403,7 @@ export default {
         onExpandRow: this.vueFormatterInit,
         onLoadError: (status, res) => {
           if (status === 403) {
-            alert("You need CSAF_MANAGEMENT permission");
+            this.$bvModal.show('vulnSourceCSAFPermission');
           }
         },
         detailFormatter: (index, row) => {
