@@ -456,7 +456,6 @@ export default {
             },
             methods: {
               deleteCsafSource: function () {
-                console.log(`delete csaf source ${this.sid}`);
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}/${this.sid}`;
                 this.axios
                   .delete(url)
@@ -469,13 +468,10 @@ export default {
                   });
               },
               resetFetched() {
-                console.log('reset:',this.sid);
                 this.lastFetched = null;
-                console.log('row:',this.name);
                 this.updateCsafSource();
               },
               updateCsafSource: function () {
-                console.log(`update entry ${this.sid}`);
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
                 this.axios
                   .post(url, {
@@ -615,7 +611,6 @@ export default {
             },
             methods: {
               deleteCsafSource: function () {
-                console.log(`delete csaf source ${this.id}`);
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}/${this.id}`;
                 this.axios
                   .delete(url)
@@ -628,13 +623,10 @@ export default {
                   });
               },
               resetFetched() {
-                console.log('reset:',this.id);
                 this.lastFetched = null;
-                console.log('row:',this.name);
                 this.updateCsafSource();
               },
               updateCsafSource: function () {
-                console.log(`update entry ${this.id}`);
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
                 this.axios
                   .post(url, {
@@ -679,23 +671,17 @@ export default {
   },
   methods: {
     async showDoc(docId) {
-      console.log('ID:', docId);
       const srow = this.$refs.table_documents.getData().find(item => item.id.toString() === docId.toString());
-      console.log('Show doc:', srow);
       this.detailTitle = srow.name;
       this.detailContent = await this.getDocument(docId);
-      console.log('Document:', this.detailContent);
       this.$bvModal.show('vulnSourceCSAFViewDocModal');
     },
     handleAdd(id) {
-      console.log(`id clicked: ${id}`);
       var addRow = this.$refs.table_suggested.getData().find(item => item.id.toString() === id.toString());
       addRow.discovery=false;
-      console.log('Row added:', addRow);
       this.updateCsafSource(addRow);
     },
     async updateCsafSource(prow) {
-      console.log(`update entry ${prow.id}`);
       let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
       try {
         const response = await this.axios.post(url, {
@@ -708,20 +694,17 @@ export default {
           aggregator: prow.aggregator,
           seen: prow.seen,
         });
-        console.log('API Response:', response);
         this.csafEntry = response.data;
         EventBus.$emit('admin:csafSources:rowUpdate', prow.id, this.csafEntry);
         this.$toastr.s(this.$t('message.updated'));
         this.refreshCsafSuggestedTable();
         this.refreshBothCsafSourcesTables();
       } catch (error) {
-        console.error('Error during update:', error);
         this.$toastr.w(this.$t('condition.unsuccessful_action'));
       }
     },
     async openCompare() {
       const selectedRows = this.$refs.table_documents.getSelections();
-      console.log('Selected rows:', selectedRows);
       this.compareLeftTitle = selectedRows[0].name;
       this.compareLeftContent = await this.getDocument(selectedRows[0].id);
       this.compareRightTitle = selectedRows[1].name;
@@ -759,7 +742,6 @@ export default {
     },
     markReadSuggestions() {
       const selectedRows = this.$refs.table_suggested.getSelections();
-      console.log('Read:', selectedRows);
       if (selectedRows.length > 0) {
         selectedRows.forEach(prow => {
           prow.seen = true;
@@ -770,18 +752,15 @@ export default {
     },
     markReadDocuments() {
       const selectedRows = this.$refs.table_documents.getSelections();
-      console.log('Read:', selectedRows);
       if (selectedRows.length > 0) {
         selectedRows.forEach(row => {
           let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/seen/${row.id}`;
           this.axios
             .post(url, { id: row.id })
             .then((response) => {
-              console.log(`Document ${row.id} marked as read:`, response.data);
               this.$toastr.s(this.$t('message.document_read'));
             })
             .catch((error) => {
-              console.error(`Error marking document ${row.id} as read:`, error);
               this.$toastr.w(this.$t('condition.unsuccessful_action'));
             });
         });
@@ -789,7 +768,6 @@ export default {
       this.refreshCsafDocumentsTable();
     },
     triggerAll() {
-      console.log('Trigger all');
       const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_TRIGGER}/`;
       return this.axios
         .post(url)
@@ -802,11 +780,9 @@ export default {
     },
     getDocument(docId) {
       let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/${docId}`;
-      console.log('requesting document:',url);
       return this.axios
         .get(url)
         .then((response) => {
-          console.log('received document:', response.data);
           return response.data
         })
         .catch((error) => {
@@ -867,7 +843,6 @@ export default {
       this.vulnsourceEnabled = this.enabledEcosystems.length !== 0;
     },
     saveConfiguration: function () {
-      console.log('Saving config changes ');
       this.updateConfigProperties([
         {
           groupName: 'vuln-source',
@@ -878,7 +853,6 @@ export default {
     },
     updateSourcesTable: function () {
       this.axios.get(this.apiUrl()).then((response) => {
-        console.log(response);
         this.srcData = response;
 
         this.$toastr.s('Csaf sources updated');
@@ -886,14 +860,12 @@ export default {
     },
     updateProvidersTable: function () {
       this.axios.get(this.apiProvidersUrl()).then((response) => {
-        console.log(response);
         this.provData = response;
         this.$toastr.s('Csaf providers updated');
       });
     },
     updateDocumentsTable: function () {
       this.axios.get(this.apiUrl()).then((response) => {
-        console.log(response);
         this.docData = response;
 
         this.$toastr.s('Csaf documents updated');

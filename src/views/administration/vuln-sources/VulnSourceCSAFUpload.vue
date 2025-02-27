@@ -69,10 +69,8 @@ export default {
               'Content-Type': 'multipart/form-data'
             }
           });
-          console.log('Upload succeeded:', response.data);
           cancel();
         } catch (error) {
-          console.error('Upload failed:', error);
         }
       } else {
         alert(this.$t('admin.please_select_file'));

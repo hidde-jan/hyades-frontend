@@ -91,7 +91,6 @@ export default {
         })
         .then((response) => {
           this.$emit('refreshTable');
-          console.log('Called refresh table from modal');
           this.$toastr.s(this.$t('admin.repository_created'));
           this.$root.$emit('bv::hide::modal', 'vulnSourceCSAFAddModal');
         })
