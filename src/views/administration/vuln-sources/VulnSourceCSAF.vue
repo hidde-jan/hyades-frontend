@@ -139,7 +139,7 @@
     </b-card-body>
     <b-card-footer></b-card-footer>
     <ecosystem-modal v-on:selection="updateEcosystem" />
-    <vuln-source-c-s-a-f-add v-on:refreshTable="refreshCsafSourcesTable" />
+    <vuln-source-c-s-a-f-add v-on:refreshTable="refreshBothCsafSourcesTables" />
     <vuln-source-c-s-a-f-compare
       :leftTitle="compareLeftTitle"
       :rightTitle="compareRightTitle"
@@ -713,7 +713,7 @@ export default {
         EventBus.$emit('admin:csafSources:rowUpdate', prow.id, this.csafEntry);
         this.$toastr.s(this.$t('message.updated'));
         this.refreshCsafSuggestedTable();
-        this.refreshCsafProvidersTable();
+        this.refreshBothCsafSourcesTables();
       } catch (error) {
         console.error('Error during update:', error);
         this.$toastr.w(this.$t('condition.unsuccessful_action'));
@@ -826,14 +826,12 @@ export default {
     apiDisUrl: function () {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DISCOVERY}`;
     },
-    refreshCsafSourcesTable: function () {
+    refreshBothCsafSourcesTables: function () {
       this.$refs.table_sources.refresh({
         url: this.apiUrl(),
         pageNumber: 1,
         silent: true,
       });
-    },
-    refreshCsafProvidersTable: function () {
       this.$refs.table_providers.refresh({
         url: this.apiProvidersUrl(),
         pageNumber: 1,
@@ -919,14 +917,13 @@ export default {
             break;
         }
       }
-      this.refreshCsafSourcesTable();
-      this.refreshCsafProvidersTable();
+      this.refreshBothCsafSourcesTables();
       this.refreshCsafDocumentsTable();
       this.refreshCsafSuggestedTable();
       this.configInitialized = true;
     });
     EventBus.$on('admin:csafSources:rowDeleted', (index, row) => {
-      this.refreshCsafSourcesTable();
+      this.refreshBothCsafSourcesTables();
     });
     EventBus.$on('admin:csafSources:rowUpdate', (index, row) => {
       this.$refs.table_sources.updateRow({ index: index, row: row });
