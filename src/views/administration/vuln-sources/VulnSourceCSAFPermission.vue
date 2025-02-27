@@ -8,8 +8,14 @@
     class="custom-modal"
   >
     <div class="modal-body">
-      <p>CSAF_MANAGEMENT permission is missing. The CSAF modules will not function properly until this permission is added.</p>
+      <p>Your account lacks the CSAF_MANAGEMENT permission. The CSAF modules will not function properly until this permission is added.</p>
+      <p>You can add it under Administration -> Access Management -> Managed Users -> Permissions or ask your Administrator</p>
     </div>
+    <template #modal-footer="{ ok }">
+      <b-button @click="ok()">
+        OK
+      </b-button>
+    </template>
   </b-modal>
 </template>
 
