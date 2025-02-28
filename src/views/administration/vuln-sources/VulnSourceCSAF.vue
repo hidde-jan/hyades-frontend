@@ -476,7 +476,7 @@ export default {
                 this.axios
                   .post(url, {
                     id: this.sid,
-                    url: this.url,
+                    url: this.surl,
                     name: this.name,
                     enabled: this.enabled,
                   })
