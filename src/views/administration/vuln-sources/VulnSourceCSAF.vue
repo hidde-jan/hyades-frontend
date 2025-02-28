@@ -328,6 +328,7 @@ export default {
         showRefresh: true,
         pagination: true,
         sidePagination: 'server',
+        dataField: 'objects',
         queryParamsType: 'pageSize',
         pageList: '[10, 25, 50, 100]',
         pageSize: 10,
