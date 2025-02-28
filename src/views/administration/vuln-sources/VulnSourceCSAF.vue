@@ -462,7 +462,7 @@ export default {
                   .delete(url)
                   .then((response) => {
                     EventBus.$emit('admin:csafAggregators:rowDeleted', index);
-                    this.$toastr.s(this.$t('admin.repository_deleted'));
+                    this.$toastr.s(this.$t('admin.csaf_source_deleted'));
                   })
                   .catch((error) => {
                     this.$toastr.w(this.$t('condition.unsuccessful_action'));
@@ -617,7 +617,7 @@ export default {
                   .delete(url)
                   .then((response) => {
                     EventBus.$emit('admin:csafProviders:rowDeleted', index);
-                    this.$toastr.s(this.$t('admin.repository_deleted'));
+                    this.$toastr.s(this.$t('admin.csaf_source_deleted'));
                   })
                   .catch((error) => {
                     this.$toastr.w(this.$t('condition.unsuccessful_action'));
@@ -698,8 +698,8 @@ export default {
         this.csafEntry = response.data;
         EventBus.$emit('admin:csafProviders:rowUpdate', prow.id, this.csafEntry);
         this.$toastr.s(this.$t('message.updated'));
-        this.refreshCsafSuggestedTable(); // TODO is this necessary here?
-        this.refreshProvidersTable();
+        this.refreshCsafSuggestedTable();
+        this.refreshProvidersTable(); // TODO re-evaluate necessity with rowUpdate
       } catch (error) {
         this.$toastr.w(this.$t('condition.unsuccessful_action'));
       }
@@ -718,27 +718,24 @@ export default {
     },
     deleteSelected() {
       const selectedRows = this.$refs.table_documents.getSelections();
-
       if (selectedRows.length === 0) {
         console.log(`nothing selected`);
         return;
       }
-
       const deletePromises = selectedRows.map((row) => {
+        var rowIndex = this.$refs.table_documents
+          .getData()
+          .findIndex((item) => item.id === row.id);
         const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/${row.id}`;
         return this.axios
           .delete(url)
           .then((response) => {
-            EventBus.$emit('admin:csafDocuments:rowDeleted', row.id);
-            this.$toastr.s(this.$t('admin.document_deleted', { id: row.id }));
+            EventBus.$emit('admin:csafDocuments:rowDeleted', rowIndex);
+            this.$toastr.s(this.$t('admin.csaf_document_deleted', { id: row.id }));
           })
           .catch((error) => {
             this.$toastr.w(this.$t('condition.unsuccessful_action'));
           });
-      });
-
-      Promise.all(deletePromises).then(() => {
-        this.refreshCsafDocumentsTable();
       });
     },
     markReadSuggestions() {
@@ -746,27 +743,36 @@ export default {
       if (selectedRows.length > 0) {
         selectedRows.forEach(prow => {
           prow.seen = true;
-          this.updateCsafSource(prow);
+          this.updateCsafSource(prow); // TODO issue update on eventbus
         });
       }
-      this.refreshCsafSuggestedTable()
+      this.refreshCsafSuggestedTable();
     },
     markReadDocuments() {
       const selectedRows = this.$refs.table_documents.getSelections();
       if (selectedRows.length > 0) {
-        selectedRows.forEach(row => {
+        selectedRows.forEach((row) => {
+          // find row index
+          var rowIndex = this.$refs.table_documents
+            .getData()
+            .findIndex((item) => item.id === row.id);
+
           let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DOCUMENT}/seen/${row.id}`;
           this.axios
             .post(url, { id: row.id })
             .then((response) => {
-              this.$toastr.s(this.$t('message.document_read'));
+              EventBus.$emit(
+                'admin:csafDocuments:rowUpdate',
+                rowIndex,
+                response.data,
+              );
+              this.$toastr.s(this.$t('admin.csaf_document_read'));
             })
-            .catch((error) => {
+            .catch(() => {
               this.$toastr.w(this.$t('condition.unsuccessful_action'));
             });
         });
       }
-      this.refreshCsafDocumentsTable();
     },
     triggerAll() {
       const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_TRIGGER}/`;
@@ -915,6 +921,12 @@ export default {
       this.$refs.table_providers.updateRow({ index: index, row: row });
       this.$refs.table_providers.expandRow(index);
     });
+    EventBus.$on('admin:csafDocuments:rowUpdate', (index, row) => {
+      this.$refs.table_documents.updateRow({ index: index, row: row });
+    });
+    EventBus.$on('admin:csafDocuments:rowDeleted', (index, row) => {
+      this.refreshCsafDocumentsTable();
+    });
     this.$refs.table_documents.$el.addEventListener('click', (event) => {
       const target = event.target;
       if (target.matches('[id^="doc-"]')) {
@@ -935,6 +947,8 @@ export default {
     EventBus.$off('admin:csafAggregators:rowDeleted');
     EventBus.$off('admin:csafProviders:rowUpdated');
     EventBus.$off('admin:csafProviders:rowDeleted');
+    EventBus.$off('admin:csafDocuments:rowUpdated');
+    EventBus.$off('admin:csafDocuments:rowDeleted');
   },
 };
 </script>

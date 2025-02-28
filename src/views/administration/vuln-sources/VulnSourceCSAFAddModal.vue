@@ -91,7 +91,7 @@ export default {
         })
         .then((response) => {
           this.$emit('refreshTable');
-          this.$toastr.s(this.$t('admin.repository_created'));
+          this.$toastr.s(this.$t('admin.csaf_source_created'));
           this.$root.$emit('bv::hide::modal', 'vulnSourceCSAFAddModal');
         })
         .catch((error) => {
