@@ -460,7 +460,7 @@ export default {
                 this.axios
                   .delete(url)
                   .then((response) => {
-                    EventBus.$emit('admin:csafSources:rowDeleted', index);
+                    EventBus.$emit('admin:csafAggregators:rowDeleted', index);
                     this.$toastr.s(this.$t('admin.repository_deleted'));
                   })
                   .catch((error) => {
@@ -483,7 +483,7 @@ export default {
                   .then((response) => {
                     this.csafEntry = response.data;
                     EventBus.$emit(
-                      'admin:csafSources:rowUpdate',
+                      'admin:csafAggregators:rowUpdate',
                       index,
                       this.csafEntry,
                     );
@@ -615,7 +615,7 @@ export default {
                 this.axios
                   .delete(url)
                   .then((response) => {
-                    EventBus.$emit('admin:csafSources:rowDeleted', index);
+                    EventBus.$emit('admin:csafProviders:rowDeleted', index);
                     this.$toastr.s(this.$t('admin.repository_deleted'));
                   })
                   .catch((error) => {
@@ -638,7 +638,7 @@ export default {
                   .then((response) => {
                     this.csafEntry = response.data;
                     EventBus.$emit(
-                      'admin:csafSources:rowUpdate',
+                      'admin:csafProviders:rowUpdate',
                       index,
                       this.csafEntry,
                     );
@@ -695,10 +695,10 @@ export default {
           seen: prow.seen,
         });
         this.csafEntry = response.data;
-        EventBus.$emit('admin:csafSources:rowUpdate', prow.id, this.csafEntry);
+        EventBus.$emit('admin:csafProviders:rowUpdate', prow.id, this.csafEntry);
         this.$toastr.s(this.$t('message.updated'));
-        this.refreshCsafSuggestedTable();
-        this.refreshBothCsafSourcesTables();
+        this.refreshCsafSuggestedTable(); // TODO is this necessary here?
+        this.refreshProvidersTable();
       } catch (error) {
         this.$toastr.w(this.$t('condition.unsuccessful_action'));
       }
@@ -803,11 +803,17 @@ export default {
       return `${this.$api.BASE_URL}/${this.$api.URL_CSAF_DISCOVERY}`;
     },
     refreshBothCsafSourcesTables: function () {
+      this.refreshAggregatorsTable();
+      this.refreshProvidersTable();
+    },
+    refreshAggregatorsTable: function () {
       this.$refs.table_sources.refresh({
         url: this.apiUrl(),
         pageNumber: 1,
         silent: true,
       });
+    },
+    refreshProvidersTable: function () {
       this.$refs.table_providers.refresh({
         url: this.apiProvidersUrl(),
         pageNumber: 1,
@@ -894,12 +900,19 @@ export default {
       this.refreshCsafSuggestedTable();
       this.configInitialized = true;
     });
-    EventBus.$on('admin:csafSources:rowDeleted', (index, row) => {
-      this.refreshBothCsafSourcesTables();
+    EventBus.$on('admin:csafAggregators:rowDeleted', (index, row) => {
+      this.refreshAggregatorsTable();
     });
-    EventBus.$on('admin:csafSources:rowUpdate', (index, row) => {
+    EventBus.$on('admin:csafAggregators:rowUpdate', (index, row) => {
       this.$refs.table_sources.updateRow({ index: index, row: row });
       this.$refs.table_sources.expandRow(index);
+    });
+    EventBus.$on('admin:csafProviders:rowDeleted', (index, row) => {
+      this.refreshProvidersTable();
+    });
+    EventBus.$on('admin:csafProviders:rowUpdate', (index, row) => {
+      this.$refs.table_providers.updateRow({ index: index, row: row });
+      this.$refs.table_providers.expandRow(index);
     });
     this.$refs.table_documents.$el.addEventListener('click', (event) => {
       const target = event.target;
@@ -917,8 +930,10 @@ export default {
     });
   },
   beforeDestroy() {
-    EventBus.$off('admin:csafSources:rowUpdated');
-    EventBus.$off('admin:csafSources:rowDeleted');
+    EventBus.$off('admin:csafAggregators:rowUpdated');
+    EventBus.$off('admin:csafAggregators:rowDeleted');
+    EventBus.$off('admin:csafProviders:rowUpdated');
+    EventBus.$off('admin:csafProviders:rowDeleted');
   },
 };
 </script>
