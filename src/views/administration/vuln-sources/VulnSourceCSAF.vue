@@ -37,12 +37,21 @@
                     {{ $t('admin.trigger_all') }}
                   </b-button>
                 </div>
-                <hr style="border: none; height: 1px; background-color: #007bff; margin: 10px 0;" />
+                <hr
+                  style="
+                    border: none;
+                    height: 1px;
+                    background-color: #007bff;
+                    margin: 10px 0;
+                  "
+                />
                 <h4>{{ $t('admin.csaf_aggregators') }}</h4>
                 <b-button
                   size="md"
                   variant="outline-primary"
-                  @click="$root.$emit('setModalTitle', $t('admin.add_aggregator'))"
+                  @click="
+                    $root.$emit('setModalTitle', $t('admin.add_aggregator'))
+                  "
                   v-b-modal.vulnSourceCSAFAddModal
                 >
                   <span class="fa fa-plus"></span>
@@ -55,12 +64,21 @@
                   :options="srcOpts"
                 >
                 </bootstrap-table>
-                <hr style="border: none; height: 1px; background-color: #007bff; margin: 10px 0;" />
+                <hr
+                  style="
+                    border: none;
+                    height: 1px;
+                    background-color: #007bff;
+                    margin: 10px 0;
+                  "
+                />
                 <h4>{{ $t('admin.csaf_providers') }}</h4>
                 <b-button
                   size="md"
                   variant="outline-primary"
-                  @click="$root.$emit('setModalTitle', $t('admin.add_provider'))"
+                  @click="
+                    $root.$emit('setModalTitle', $t('admin.add_provider'))
+                  "
                   v-b-modal.vulnSourceCSAFAddModal
                 >
                   <span class="fa fa-plus"></span>
@@ -73,7 +91,14 @@
                   :options="provOpts"
                 >
                 </bootstrap-table>
-                <hr style="border: none; height: 1px; background-color: #007bff; margin: 10px 0;" />
+                <hr
+                  style="
+                    border: none;
+                    height: 1px;
+                    background-color: #007bff;
+                    margin: 10px 0;
+                  "
+                />
                 <h4>{{ $t('admin.suggested_discovery_sources') }}</h4>
                 <bootstrap-table
                   ref="table_suggested"
@@ -106,14 +131,6 @@
                     <span class="fa fa-file"></span>
                     {{ $t('admin.compare_selected') }}
                   </b-button>
-                  <b-button
-                    size="md"
-                    variant="outline-primary"
-                    @click="deleteSelected"
-                  >
-                    <span class="fa fa-trash"></span>
-                    {{ $t('admin.delete_selected') }}
-                  </b-button>
                 </div>
                 <bootstrap-table
                   ref="table_documents"
@@ -123,14 +140,24 @@
                   data-click-to-select="true"
                 >
                 </bootstrap-table>
-                <b-button
-                  size="md"
-                  variant="outline-primary"
-                  @click="markReadDocuments"
-                >
-                  <span class="fa fa-check"></span>
-                  {{ $t('admin.mark_selected_read') }}
-                </b-button>
+                <div id="repositoryToolbar" class="bs-table-custom-toolbar">
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    @click="markReadDocuments"
+                  >
+                    <span class="fa fa-check"></span>
+                    {{ $t('admin.mark_selected_read') }}
+                  </b-button>
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    @click="deleteSelected"
+                  >
+                    <span class="fa fa-trash"></span>
+                    {{ $t('admin.delete_selected') }}
+                  </b-button>
+                </div>
               </b-card-body>
             </b-tab>
           </b-tabs>
@@ -240,8 +267,7 @@ export default {
           },
         },
       ],
-      recData: [
-      ],
+      recData: [],
       recOptions: {
         search: true,
         showColumns: true,
@@ -302,10 +328,9 @@ export default {
             if (!value || value <= 0) {
               return this.$t('admin.never');
             }
-            const date = new Date(value*1000);
+            const date = new Date(value * 1000);
             return date.toLocaleString();
           },
-
         },
         {
           title: 'Read',
@@ -320,8 +345,7 @@ export default {
           },
         },
       ],
-      docData: [
-      ],
+      docData: [],
       docOpts: {
         search: true,
         showColumns: true,
@@ -370,7 +394,7 @@ export default {
             if (!value || value <= 0) {
               return this.$t('admin.never');
             }
-            const date = new Date(value*1000);
+            const date = new Date(value * 1000);
             return date.toLocaleString();
           },
         },
@@ -529,7 +553,7 @@ export default {
             if (!value || value <= 0) {
               return this.$t('admin.never');
             }
-            const date = new Date(value*1000);
+            const date = new Date(value * 1000);
             return date.toLocaleString();
           },
         },
@@ -672,14 +696,18 @@ export default {
   },
   methods: {
     async showDoc(docId) {
-      const srow = this.$refs.table_documents.getData().find(item => item.id.toString() === docId.toString());
+      const srow = this.$refs.table_documents
+        .getData()
+        .find((item) => item.id.toString() === docId.toString());
       this.detailTitle = srow.name;
       this.detailContent = await this.getDocument(docId);
       this.$bvModal.show('vulnSourceCSAFViewDocModal');
     },
     handleAdd(id) {
-      var addRow = this.$refs.table_suggested.getData().find(item => item.id.toString() === id.toString());
-      addRow.discovery=false;
+      var addRow = this.$refs.table_suggested
+        .getData()
+        .find((item) => item.id.toString() === id.toString());
+      addRow.discovery = false;
       this.updateCsafSource(addRow);
     },
     async updateCsafSource(prow) {
@@ -696,7 +724,11 @@ export default {
           seen: prow.seen,
         });
         this.csafEntry = response.data;
-        EventBus.$emit('admin:csafProviders:rowUpdate', prow.id, this.csafEntry);
+        EventBus.$emit(
+          'admin:csafProviders:rowUpdate',
+          prow.id,
+          this.csafEntry,
+        );
         this.$toastr.s(this.$t('message.updated'));
         this.refreshCsafSuggestedTable();
         this.refreshProvidersTable(); // TODO re-evaluate necessity with rowUpdate
@@ -731,7 +763,9 @@ export default {
           .delete(url)
           .then((response) => {
             EventBus.$emit('admin:csafDocuments:rowDeleted', rowIndex);
-            this.$toastr.s(this.$t('admin.csaf_document_deleted', { id: row.id }));
+            this.$toastr.s(
+              this.$t('admin.csaf_document_deleted', { id: row.id }),
+            );
           })
           .catch((error) => {
             this.$toastr.w(this.$t('condition.unsuccessful_action'));
@@ -741,7 +775,7 @@ export default {
     markReadSuggestions() {
       const selectedRows = this.$refs.table_suggested.getSelections();
       if (selectedRows.length > 0) {
-        selectedRows.forEach(prow => {
+        selectedRows.forEach((prow) => {
           prow.seen = true;
           this.updateCsafSource(prow); // TODO issue update on eventbus
         });
@@ -790,7 +824,7 @@ export default {
       return this.axios
         .get(url)
         .then((response) => {
-          return response.data
+          return response.data;
         })
         .catch((error) => {
           this.$toastr.w(this.$t('condition.unsuccessful_action'));
