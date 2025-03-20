@@ -108,14 +108,20 @@
                   data-click-to-select="true"
                 >
                 </bootstrap-table>
-                <b-button
-                  size="md"
-                  variant="outline-primary"
-                  @click="markReadSuggestions"
-                >
-                  <span class="fa fa-check"></span>
-                  {{ $t('admin.mark_selected_read') }}
-                </b-button>
+                <div id="repositoryToolbar" class="bs-table-custom-toolbar">
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    @click="markReadSuggestions"
+                  >
+                    <span class="fa fa-check"></span>
+                    {{ $t('admin.mark_selected_read') }}
+                  </b-button>
+                  <b-button size="md" variant="outline-primary" @click="addAll">
+                    <span class="fa fa-plus"></span>
+                    {{ $t('admin.add_all') }}
+                  </b-button>
+                </div>
                 <hr />
               </b-card-body>
             </b-tab>
@@ -709,6 +715,13 @@ export default {
         .find((item) => item.id.toString() === id.toString());
       addRow.discovery = false;
       this.updateCsafSource(addRow);
+    },
+    addAll() {
+      const allRows = this.$refs.table_suggested.getData();
+      allRows.forEach((item) => {
+        item.discovery = false;
+        this.updateCsafSource(item);
+      });
     },
     async updateCsafSource(prow) {
       let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
