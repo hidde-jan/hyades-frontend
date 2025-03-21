@@ -117,9 +117,9 @@
                     <span class="fa fa-check"></span>
                     {{ $t('admin.mark_selected_read') }}
                   </b-button>
-                  <b-button size="md" variant="outline-primary" @click="addAll">
+                  <b-button size="md" variant="outline-primary" @click="addSelected">
                     <span class="fa fa-plus"></span>
-                    {{ $t('admin.add_all') }}
+                    {{ $t('admin.add_selected') }}
                   </b-button>
                 </div>
                 <hr />
@@ -716,12 +716,14 @@ export default {
       addRow.discovery = false;
       this.updateCsafSource(addRow);
     },
-    addAll() {
-      const allRows = this.$refs.table_suggested.getData();
-      allRows.forEach((item) => {
-        item.discovery = false;
-        this.updateCsafSource(item);
-      });
+    addSelected() {
+      const selectedRows = this.$refs.table_suggested.getSelections();
+      if (selectedRows.length > 0) {
+        selectedRows.forEach((item) => {
+          item.discovery = false;
+          this.updateCsafSource(item);
+        });
+      }
     },
     async updateCsafSource(prow) {
       let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
