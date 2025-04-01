@@ -500,11 +500,13 @@ export default {
               },
               resetFetched() {
                 this.lastFetched = null;
-                this.updateCsafSource();
+                this.updateCsafSource().then(() => {
+                  EventBus.$emit('refreshAggregatorsTable');
+                });
               },
               updateCsafSource: function () {
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;
-                this.axios
+                return this.axios
                   .post(url, {
                     id: this.sid,
                     url: this.surl,
@@ -655,11 +657,13 @@ export default {
               },
               resetFetched() {
                 this.lastFetched = null;
-                this.updateCsafSource();
+                this.updateCsafSource().then(() => {
+                  EventBus.$emit('refreshProvidersTable');
+                });
               },
               updateCsafSource: function () {
                 let url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_PROVIDER}`;
-                this.axios
+                return this.axios
                   .post(url, {
                     id: this.id,
                     url: this.url,
@@ -975,6 +979,12 @@ export default {
     });
     EventBus.$on('admin:csafDocuments:rowDeleted', (index, row) => {
       this.refreshCsafDocumentsTable();
+    });
+    EventBus.$on('refreshProvidersTable', () => {
+      this.refreshProvidersTable();
+    });
+    EventBus.$on('refreshAggregatorsTable', () => {
+      this.refreshAggregatorsTable();
     });
     this.$refs.table_documents.$el.addEventListener('click', (event) => {
       const target = event.target;
