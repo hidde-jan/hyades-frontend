@@ -344,6 +344,16 @@ export default {
           sortable: true,
         },
         {
+          title: 'Newest Version?',
+          field: 'latestVersion',
+          formatter: (value, row) => {
+            const allRows = this.$refs.table_documents.getData();
+            const sameNameDocs = allRows.filter(doc => doc.name === row.name);
+            const maxVersion = Math.max(...sameNameDocs.map(doc => Number(doc.trackingVersion) || -Infinity));
+            return Number(row.trackingVersion) === maxVersion ? 'Yes' : 'No';
+          },
+        },
+        {
           title: 'Actions',
           field: 'actions',
           formatter: (value, row) => {
