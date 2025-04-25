@@ -458,17 +458,16 @@ export default {
                       input-group-size="mb-3" rules="required"
                       type="url" v-model="surl"
                       autofocus="true"
-                      v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                    />
                   </b-col>
                   <b-col sm="6">
-
                     <div>
                       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{$t('admin.enabled')}}
                     </div>
-
                     <div style="text-align:right">
                        <b-button variant="outline-danger" @click="deleteCsafSource">Delete CSAF source</b-button>
                        <b-button variant="outline-danger" @click="resetFetched">Reset last fetched</b-button>
+                       <b-button variant="outline-primary" @click="updateCsafSource">Save changes</b-button>
                     </div>
                   </b-col>
                 </b-row>
@@ -615,17 +614,16 @@ export default {
                       input-group-size="mb-3" rules="required"
                       type="url" v-model="url"
                       autofocus="true"
-                      v-debounce:750ms="updateCsafSource" :debounce-events="'keyup'"/>
+                    />
                   </b-col>
                   <b-col sm="6">
-
                     <div>
                       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{$t('admin.enabled')}}
                     </div>
-
                     <div style="text-align:right">
                       <b-button variant="outline-danger" @click="deleteCsafSource">Delete CSAF source</b-button>
                       <b-button variant="outline-danger" @click="resetFetched">Reset last fetched</b-button>
+                      <b-button variant="outline-primary" @click="updateCsafSource">Save changes</b-button>
                     </div>
                   </b-col>
                 </b-row>
