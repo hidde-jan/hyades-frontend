@@ -455,7 +455,7 @@ export default {
                   <b-col sm="6">
                     <b-validated-input-group-form-input
                       id="surl" :label="$t('admin.url')"
-                      input-group-size="mb-3" rules="required"
+                      input-group-size="mb-3" rules="required|domainOrUrl"
                       type="url" v-model="surl"
                       autofocus="true"
                     />
@@ -611,7 +611,7 @@ export default {
                   <b-col sm="6">
                     <b-validated-input-group-form-input
                       id="url" :label="$t('admin.url')"
-                      input-group-size="mb-3" rules="required"
+                      input-group-size="mb-3" rules="required|domainOrUrl"
                       type="url" v-model="url"
                       autofocus="true"
                     />

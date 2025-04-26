@@ -6,6 +6,8 @@ import {
   max_value,
 } from 'vee-validate/dist/rules';
 
+import validator from 'validator';
+
 import i18n from '../i18n';
 
 // Get rule localization based on the rule name
@@ -17,3 +19,10 @@ extend('required', required);
 extend('confirmed', confirmed);
 extend('min_value', min_value);
 extend('max_value', max_value);
+
+extend('domainOrUrl', {
+  validate(value) {
+    return validator.isURL(value) || validator.isFQDN(value);
+  },
+  message: 'Invalid domain or url',
+});

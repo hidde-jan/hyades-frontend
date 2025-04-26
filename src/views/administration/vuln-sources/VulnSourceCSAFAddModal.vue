@@ -18,7 +18,7 @@
       id="url"
       :label="$t('admin.url')"
       input-group-size="mb-3"
-      rules="required"
+      rules="required|domainOrUrl"
       type="url"
       v-model="url"
     />
