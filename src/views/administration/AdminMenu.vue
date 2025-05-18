@@ -182,6 +182,11 @@ export default {
               name: this.$t('admin.trivy'),
               route: 'analyzers/trivy',
             },
+            {
+              component: 'CsafAnalyzer',
+              name: this.$t('admin.csaf_analyzer'),
+              route: 'analyzers/csaf',
+            },
           ],
         },
         {

@@ -44,10 +44,12 @@ import OssIndexAnalyzer from './analyzers/OssIndexAnalyzer';
 import SnykAnalyzer from './analyzers/SnykAnalyzer';
 import TrivyAnalyzer from './analyzers/TrivyAnalyzer';
 import VulnDbAnalyzer from './analyzers/VulnDbAnalyzer';
+import CsafAnalyzer from './analyzers/CsafAnalyzer';
 // Vulnerability sources
 import VulnSourceGitHubAdvisories from './vuln-sources/VulnSourceGitHubAdvisories';
 import VulnSourceNvd from './vuln-sources/VulnSourceNvd';
 import VulnSourceOSVAdvisories from './vuln-sources/VulnSourceOSVAdvisories';
+import VulnSourceCSAF from './vuln-sources/VulnSourceCSAF';
 // Repositories
 import Cargo from './repositories/Cargo';
 import Composer from './repositories/Composer';
@@ -97,9 +99,11 @@ export default {
     VulnDbAnalyzer,
     SnykAnalyzer,
     TrivyAnalyzer,
+    CsafAnalyzer,
     VulnSourceNvd,
     VulnSourceGitHubAdvisories,
     VulnSourceOSVAdvisories,
+    VulnSourceCSAF,
     Cargo,
     Composer,
     Gem,

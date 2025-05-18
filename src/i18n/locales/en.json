@@ -75,6 +75,7 @@
     "create_user": "Create User",
     "csaf_advisories": "CSAF Advisories",
     "csaf_aggregators": "Aggregators",
+    "csaf_analyzer": "CSAF Analyzer",
     "csaf_document_deleted": "CSAF Document deleted",
     "csaf_document_read": "CSAF Document read",
     "csaf_documents": "CSAF Documents",
