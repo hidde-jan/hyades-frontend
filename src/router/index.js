@@ -158,6 +158,7 @@ function configRoutes() {
             'projects/:uuid/services',
             'projects/:uuid/dependencyGraph',
             'projects/:uuid/findings',
+            'projects/:uuid/advisories',
             'projects/:uuid/epss',
             'projects/:uuid/policyViolations',
           ],

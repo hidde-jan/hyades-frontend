@@ -286,6 +286,32 @@
         />
       </b-tab>
       <b-tab
+        ref="advisories"
+        v-if="isPermitted(PERMISSIONS.VIEW_VULNERABILITY)"
+        @click="routeTo('advisories')"
+      >
+        <template v-slot:title>
+          <i class="fa fa-bell"></i> {{ $t('message.advisories') }}
+          <b-badge
+            variant="tab-total"
+            v-b-tooltip.hover
+            :title="$t('message.total_findings_excluding_aliases')"
+            >{{ totalFindings }}</b-badge
+          >
+          <b-badge
+            variant="tab-info"
+            v-b-tooltip.hover
+            :title="$t('message.total_findings_including_aliases')"
+            >{{ totalFindingsIncludingAliases }}</b-badge
+          >
+        </template>
+        <project-advisories
+          :key="this.uuid"
+          :uuid="this.uuid"
+          v-on:total="totalFindingsIncludingAliases = $event"
+        />
+      </b-tab>
+      <b-tab
         ref="epss"
         v-if="isPermitted(PERMISSIONS.VIEW_VULNERABILITY)"
         @click="routeTo('epss')"
@@ -368,6 +394,7 @@ import ProjectPropertiesModal from './ProjectPropertiesModal';
 import ProjectCreatePropertyModal from './ProjectCreatePropertyModal';
 import ProjectAddVersionModal from './ProjectAddVersionModal';
 import ProjectFindings from './ProjectFindings';
+import ProjectAdvisories from './ProjectAdvisories';
 import ProjectPolicyViolations from './ProjectPolicyViolations';
 import ProjectEpss from './ProjectEpss';
 import ExternalReferencesDropdown from '../../components/ExternalReferencesDropdown.vue';
@@ -377,6 +404,7 @@ export default {
   components: {
     ProjectPolicyViolations,
     ProjectFindings,
+    ProjectAdvisories,
     ProjectAddVersionModal,
     ProjectCreatePropertyModal,
     ProjectPropertiesModal,

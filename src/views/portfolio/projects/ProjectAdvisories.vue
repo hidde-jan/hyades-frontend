@@ -1,0 +1,135 @@
+<template>
+  <div>
+    <bootstrap-table
+      ref="advisoriesTable"
+      :columns="columns"
+      :data="data"
+      :options="options"
+    />
+  </div>
+</template>
+
+<script>
+import { Switch as cSwitch } from '@coreui/vue';
+import $ from 'jquery';
+import xssFilters from 'xss-filters';
+
+import common from '@/shared/common';
+import i18n from '@/i18n';
+import {
+  compareVersions,
+  loadUserPreferencesForBootstrapTable,
+} from '@/shared/utils';
+import bootstrapTableMixin from '@/mixins/bootstrapTableMixin';
+import permissionsMixin from '@/mixins/permissionsMixin';
+import FindingAudit from './FindingAudit';
+import ProjectUploadVexModal from './ProjectUploadVexModal';
+
+export default {
+  props: {
+    uuid: String,
+  },
+  mixins: [bootstrapTableMixin, permissionsMixin],
+  components: {
+    cSwitch,
+    ProjectUploadVexModal,
+  },
+  data() {
+    return {
+      showSuppressedFindings: this.showSuppressedFindings,
+      labelIcon: {
+        dataOn: '\u2713',
+        dataOff: '\u2715',
+      },
+      columns: [
+        {
+          field: 'advisory',
+          title: this.$t('message.advisory'),
+          sortable: true,
+        },
+        {
+          field: 'analyzer',
+          title: this.$t('message.analyzer'),
+          sortable: true,
+        },
+        {
+          field: 'matchpercentage',
+          title: this.$t('message.matchpercentage'),
+          sortable: true,
+        },
+        {
+          field: 'analysis',
+          title: this.$t('message.analysis'),
+          sortable: true,
+        },
+      ],
+      data: [
+        {
+          advisory: 'Sample advisory',
+          analyzer: 'CSAF Matching Engine',
+          matchpercentage: '42 %',
+          analysis: 'SEVERE',
+        },
+      ],
+      options: {
+        search: true,
+        showColumns: true,
+        showRefresh: true,
+        pagination: true,
+        silentSort: false,
+        sidePagination: 'client',
+        queryParamsType: 'pageSize',
+        pageList: '[10, 25, 50, 100]',
+        icons: {
+          detailOpen: 'fa-fw fa-angle-right',
+          detailClose: 'fa-fw fa-angle-down',
+          refresh: 'fa-refresh',
+        },
+        detailView: true,
+        detailViewIcon: true,
+        detailViewByClick: false,
+        /* detailFormatter: (index, row) => {
+          return (
+            row &&
+            this.vueFormatter({
+              i18n,
+              propsData: {
+                finding: row,
+                projectUuid: this.uuid,
+              },
+              ...FindingAudit,
+            })
+          );
+        },
+        onExpandRow: this.vueFormatterInit, */
+      },
+    };
+  },
+  methods: {
+    /*apiUrl: function () {
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_FINDING}/project/${this.uuid}`;
+      if (this.showSuppressedFindings === undefined) {
+        url += '?suppressed=false';
+      } else {
+        url += '?suppressed=' + this.showSuppressedFindings;
+      }
+      return url;
+    },*/
+    /*reAnalyze: function (data) {
+      let analyzeUrl = `${this.$api.BASE_URL}/${this.$api.URL_FINDING}/project/${this.uuid}/analyze`;
+      this.axios.post(analyzeUrl).then((response) => {
+        this.$toastr.s(this.$t('message.project_reanalyze_requested'));
+        //ignore token from response, don't wait for completion
+        this.refreshTable();
+      });
+    },*/
+    /*refreshTable: function () {
+      this.$refs.table.refresh({
+        url: this.apiUrl(),
+        pageNumber: 1,
+        silent: true,
+      });
+    },*/
+  },
+};
+</script>
