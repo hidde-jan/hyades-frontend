@@ -43,34 +43,27 @@ export default {
       },
       columns: [
         {
-          field: 'advisory',
+          field: 'name',
           title: this.$t('message.advisory'),
           sortable: true,
         },
         {
-          field: 'analyzer',
+          field: 'url',
           title: this.$t('message.analyzer'),
           sortable: true,
         },
         {
-          field: 'matchpercentage',
+          field: 'documentId',
           title: this.$t('message.matchpercentage'),
           sortable: true,
         },
         {
-          field: 'analysis',
+          field: 'findingsPerDoc',
           title: this.$t('message.analysis'),
           sortable: true,
         },
       ],
-      data: [
-        {
-          advisory: 'Sample advisory',
-          analyzer: 'CSAF Matching Engine',
-          matchpercentage: '42 %',
-          analysis: 'SEVERE',
-        },
-      ],
+      data: [],
       options: {
         search: true,
         showColumns: true,
@@ -105,16 +98,19 @@ export default {
       },
     };
   },
+  mounted() {
+    this.refreshTable();
+  },
   methods: {
-    /*apiUrl: function () {
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_FINDING}/project/${this.uuid}`;
+    apiUrl: function () {
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/project/${this.uuid}`;
       if (this.showSuppressedFindings === undefined) {
         url += '?suppressed=false';
       } else {
         url += '?suppressed=' + this.showSuppressedFindings;
       }
       return url;
-    },*/
+    },
     /*reAnalyze: function (data) {
       let analyzeUrl = `${this.$api.BASE_URL}/${this.$api.URL_FINDING}/project/${this.uuid}/analyze`;
       this.axios.post(analyzeUrl).then((response) => {
@@ -123,13 +119,13 @@ export default {
         this.refreshTable();
       });
     },*/
-    /*refreshTable: function () {
-      this.$refs.table.refresh({
+    refreshTable: function () {
+      this.$refs.advisoriesTable.refresh({
         url: this.apiUrl(),
         pageNumber: 1,
         silent: true,
       });
-    },*/
+    },
   },
 };
 </script>
