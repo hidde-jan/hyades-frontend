@@ -8,9 +8,9 @@
         v-model="scannerEnabled"
         label
         v-bind="labelIcon"
-      />{{ $t('admin.analyzer_internal_enable') }}
+      />{{ $t('admin.analyzer_csaf_enable') }}
       <br />
-      <c-switch
+      <!--<c-switch
         id="scannerCpeFuzzyEnableInput"
         color="primary"
         v-model="scannerCpeFuzzyEnableInput"
@@ -33,8 +33,30 @@
         label
         v-bind="labelIcon"
       />{{ $t('admin.analyzer_internal_fuzzy_exclude_internal') }}
+    -->
+      <br />
+      <b-row>
+        <b-col sm="2">
+          <label for="threshold-input-range">Matching threshold:</label>
+        </b-col>
+        <b-col sm="3">
+          <b-form-input
+            id="threshold-input-range"
+            type="range"
+            v-model="thresholdValue"
+          />
+        </b-col>
+        <b-col sm="2">
+          <b-form-input
+            id="threshold-input-number"
+            type="number"
+            v-model="thresholdValue"
+          />
+        </b-col>
+      </b-row>
+      
       <hr />
-      {{ $t('admin.analyzer_internal_desc') }}
+      {{ $t('admin.analyzer_csaf_desc') }}
     </b-card-body>
     <b-card-footer>
       <b-button variant="outline-primary" class="px-4" @click="saveChanges">{{
@@ -60,13 +82,11 @@ export default {
   data() {
     return {
       scannerEnabled: false,
-      scannerCpeFuzzyEnableInput: false,
-      scannerCpeFuzzyExcludePurlInput: true,
-      scannerCpeFuzzyExcludeInternalInput: true,
       labelIcon: {
         dataOn: '\u2713',
         dataOff: '\u2715',
       },
+      thresholdValue: 80,
     };
   },
   methods: {
@@ -74,33 +94,15 @@ export default {
       this.updateConfigProperties([
         {
           groupName: 'scanner',
-          propertyName: 'internal.enabled',
+          propertyName: 'csaf.enabled',
           propertyValue: this.scannerEnabled,
         },
         {
           groupName: 'scanner',
-          propertyName: 'internal.fuzzy.enabled',
-          propertyValue: this.scannerCpeFuzzyEnableInput,
-        },
-        {
-          groupName: 'scanner',
-          propertyName: 'internal.fuzzy.exclude.purl',
-          propertyValue:
-            !this.scannerCpeFuzzyEnableInput ||
-            !this.scannerCpeFuzzyExcludePurlInput,
-        },
-        {
-          groupName: 'scanner',
-          propertyName: 'internal.fuzzy.exclude.internal',
-          propertyValue:
-            !this.scannerCpeFuzzyEnableInput ||
-            !this.scannerCpeFuzzyExcludeInternalInput,
+          propertyName: 'csaf.threshold',
+          propertyValue: this.thresholdValue,
         },
       ]);
-      if (!this.scannerCpeFuzzyEnableInput) {
-        this.scannerCpeFuzzyExcludePurlInput = false;
-        this.scannerCpeFuzzyExcludeInternalInput = false;
-      }
     },
   },
   created() {
@@ -111,23 +113,11 @@ export default {
       for (let i = 0; i < configItems.length; i++) {
         let item = configItems[i];
         switch (item.propertyName) {
-          case 'internal.enabled':
+          case 'csaf.enabled':
             this.scannerEnabled = common.toBoolean(item.propertyValue);
             break;
-          case 'internal.fuzzy.enabled':
-            this.scannerCpeFuzzyEnableInput = common.toBoolean(
-              item.propertyValue,
-            );
-            break;
-          case 'internal.fuzzy.exclude.purl':
-            this.scannerCpeFuzzyExcludePurlInput = !common.toBoolean(
-              item.propertyValue,
-            );
-            break;
-          case 'internal.fuzzy.exclude.internal':
-            this.scannerCpeFuzzyExcludeInternalInput = !common.toBoolean(
-              item.propertyValue,
-            );
+          case 'csaf.threshold':
+            this.thresholdValue = item.propertyValue;
             break;
         }
       }
