@@ -18,6 +18,10 @@ const VulnerabilityList = () =>
   import('@/views/portfolio/vulnerabilities/VulnerabilityList');
 const VulnerabilityAudit = () =>
   import('@/views/globalAudit/VulnerabilityAudit');
+const AdvisoriesList = () =>
+  import('@/views/portfolio/advisories/AdvisoriesList');
+const AdvisoryDetail = () =>
+  import('@/views/portfolio/advisories/AdvisoryDetail');
 const LicenseList = () => import('@/views/portfolio/licenses/LicenseList');
 const PolicyManagement = () => import('@/views/policy/PolicyManagement');
 const Project = () => import('@/views/portfolio/projects/Project');
@@ -285,6 +289,30 @@ function configRoutes() {
             i18n: 'message.vulnerabilities',
             sectionPath: '/vulnerabilities',
             sectionName: 'Vulnerabilities',
+            permissions: ['VIEW_PORTFOLIO'],
+          },
+        },
+        {
+          path: 'advisories',
+          name: 'Advisories',
+          component: AdvisoriesList,
+          meta: {
+            title: i18n.t('admin.advisories'),
+            i18n: 'admin.advisories',
+            sectionPath: '/advisories',
+            sectionName: 'Advisories',
+            permissions: ['VIEW_PORTFOLIO'],
+          },
+        },
+        {
+          path: 'advisories/advisoryDetail',
+          name: 'AdvisoryDetail',
+          component: AdvisoryDetail,
+          meta: {
+            title: i18n.t('admin.advisories'),
+            i18n: 'admin.advisories',
+            sectionPath: '/advisories/advisoryDetail',
+            sectionName: 'Advisories',
             permissions: ['VIEW_PORTFOLIO'],
           },
         },

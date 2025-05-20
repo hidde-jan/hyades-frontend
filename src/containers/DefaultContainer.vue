@@ -98,6 +98,12 @@ export default {
           permission: permissions.VIEW_PORTFOLIO,
         },
         {
+          name: this.$t('admin.advisories'),
+          url: '/advisories',
+          icon: 'fa fa-info',
+          permission: permissions.VIEW_PORTFOLIO,
+        },
+        {
           name: this.$t('message.licenses'),
           url: '/licenses',
           icon: 'fa fa-balance-scale',
