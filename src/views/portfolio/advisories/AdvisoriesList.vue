@@ -8,33 +8,48 @@
       :data="data"
       :options="options"
       data-click-to-select="true"
-      @on-click-row="handleRowClick"
     >
+      <template v-slot:cell(name)="data">
+        <a @click.prevent="handleRowClick(data.row)">{{ data.value }}</a>
+      </template>
+    </bootstrap-table>
   </div>
 </template>
 
 <script>
 import PortfolioWidgetRow from '../../dashboard/PortfolioWidgetRow';
 import permissionsMixin from '../../../mixins/permissionsMixin';
-
+import xssFilters from 'xss-filters';
 
 export default {
   mixins: [permissionsMixin],
   components: {
     PortfolioWidgetRow,
   },
-  beforeCreate() {
-
-  },
-  beforeMount() {
-
-  },
-  watch: {
-
-  },
+  beforeCreate() {},
+  beforeMount() {},
+  watch: {},
   methods: {
     handleRowClick(row) {
-    this.$router.push({ name: '/advisories/advisoryDetail', params: { id: row.name } });
+      this.$router.push({ name: '/advisory', params: { id: row.name } });
+    },
+    apiUrl: function () {
+      //TODO: find correct url
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/project/${this.uuid}`;
+      if (this.showSuppressedFindings === undefined) {
+        url += '?suppressed=false';
+      } else {
+        url += '?suppressed=' + this.showSuppressedFindings;
+      }
+      return url;
+    },
+    refreshTable: function () {
+      //TODO uncomment when api url available
+     /* this.$refs.table_advisories.refresh({
+        url: this.apiUrl(),
+        pageNumber: 1,
+        silent: true,
+      });*/
     },
   },
   data() {
@@ -44,7 +59,10 @@ export default {
           title: 'Name',
           field: 'name',
           sortable: true,
-
+          formatter(value, row, index) {
+            let url = xssFilters.uriInUnQuotedAttr('../advisory/' + row.name);
+            return `<a href="${url}">${xssFilters.inHTMLData(value)}</a>`;
+          },
         },
         {
           title: 'URL',
@@ -63,9 +81,9 @@ export default {
           field: 'matches',
           sortable: true,
         },
-
       ],
       data: [
+        //TODO: delete when api is working
         {
           select: true,
           name: 'Intevation GmbH',
@@ -75,7 +93,7 @@ export default {
         },
         {
           select: false,
-          name: 'CSIA',
+          name: 'CISA',
           url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.jsona',
           projects: 2,
           matches: 1,
@@ -107,8 +125,10 @@ export default {
         },
         onClickRow: this.handleRowClick,
       },
-
     };
+  },
+  mounted() {
+    this.refreshTable();
   },
 };
 </script>

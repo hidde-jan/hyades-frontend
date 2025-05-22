@@ -305,16 +305,17 @@ function configRoutes() {
           },
         },
         {
-          path: 'advisories/advisoryDetail',
-          name: 'AdvisoryDetail',
+          path: 'advisory/:id',
+          name: 'Advisory',
           component: AdvisoryDetail,
           meta: {
             title: i18n.t('admin.advisories'),
             i18n: 'admin.advisories',
-            sectionPath: '/advisories/advisoryDetail',
-            sectionName: 'Advisories',
+            sectionPath: '/advisory',
+            sectionName: 'Advisory',
             permissions: ['VIEW_PORTFOLIO'],
           },
+          props: true,
         },
         {
           path: 'tags',
