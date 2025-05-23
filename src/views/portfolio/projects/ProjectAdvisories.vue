@@ -6,6 +6,14 @@
       :data="data"
       :options="options"
     />
+    <b-button
+      size="md"
+      variant="outline-primary"
+      @click="handleSelected"
+    >
+      <span class="fa fa-plus"></span>
+      Add audit details
+    </b-button>
   </div>
 </template>
 
@@ -42,6 +50,11 @@ export default {
         dataOff: '\u2715',
       },
       columns: [
+        {
+          title: 'Select',
+          field: 'select',
+          checkbox: true,
+        },
         {
           field: 'name',
           title: this.$t('message.advisory'),
@@ -125,6 +138,12 @@ export default {
         pageNumber: 1,
         silent: true,
       });
+    },
+    handleSelected() {
+      const selectedRows = this.$refs.advisoriesTable.getSelections();
+      if (selectedRows.length > 0) {
+        //TODO: open modal with selected as props
+      }
     },
   },
 };
