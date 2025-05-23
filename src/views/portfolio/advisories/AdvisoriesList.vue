@@ -51,6 +51,10 @@ export default {
         silent: true,
       });*/
     },
+    reanalyze(adId) {
+      console.log(`Reanalyzing advisory with ID: ${adId}`);
+      //TODO: Add api call
+    },
   },
   data() {
     return {
@@ -80,6 +84,13 @@ export default {
           title: 'Matches',
           field: 'matches',
           sortable: true,
+        },
+        {
+          title: 'Actions',
+          field: 'actions',
+          formatter: (value, row) => {
+            return `<button class="btn btn-primary" id="reanalyze-${row.name}"> <span class="fa fa-refresh"></span> Reanalyze </button>`;
+          },
         },
       ],
       data: [
@@ -129,6 +140,13 @@ export default {
   },
   mounted() {
     this.refreshTable();
+    this.$refs.table_advisories.$el.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target.matches('[id^="reanalyze-"]')) {
+        const adId = target.id.split('-')[1];
+        this.reanalyze(adId);
+      }
+    });
   },
 };
 </script>
