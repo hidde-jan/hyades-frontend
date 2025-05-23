@@ -117,7 +117,11 @@
                     <span class="fa fa-check"></span>
                     {{ $t('admin.mark_selected_read') }}
                   </b-button>
-                  <b-button size="md" variant="outline-primary" @click="addSelected">
+                  <b-button
+                    size="md"
+                    variant="outline-primary"
+                    @click="addSelected"
+                  >
                     <span class="fa fa-plus"></span>
                     {{ $t('admin.add_selected') }}
                   </b-button>
@@ -348,8 +352,12 @@ export default {
           field: 'latestVersion',
           formatter: (value, row) => {
             const allRows = this.$refs.table_documents.getData();
-            const sameNameDocs = allRows.filter(doc => doc.name === row.name);
-            const maxVersion = Math.max(...sameNameDocs.map(doc => Number(doc.trackingVersion) || -Infinity));
+            const sameNameDocs = allRows.filter((doc) => doc.name === row.name);
+            const maxVersion = Math.max(
+              ...sameNameDocs.map(
+                (doc) => Number(doc.trackingVersion) || -Infinity,
+              ),
+            );
             return Number(row.trackingVersion) === maxVersion ? 'Yes' : 'No';
           },
         },
@@ -357,7 +365,9 @@ export default {
           title: 'Actions',
           field: 'actions',
           formatter: (value, row) => {
-            return `<button class="btn btn-primary" id="doc-${row.id}"> <span class="fa fa-search-plus"></span> View Details</button>`;
+            return `<button class="btn btn-primary" id="doc-${row.id}"> <span class="fa fa-search-plus"></span> View Details</button>
+                    <button class="btn btn-primary" id="reanalyze-${row.id}"> <span class="fa fa-refresh"></span> Reanalyze </button>
+`;
           },
         },
       ],
@@ -721,6 +731,10 @@ export default {
       this.detailContent = await this.getDocument(docId);
       this.$bvModal.show('vulnSourceCSAFViewDocModal');
     },
+    reanalyze(docId) {
+      console.log(`Reanalyzing document with ID: ${docId}`);
+      //TODO: Add api call
+    },
     handleAdd(id) {
       var addRow = this.$refs.table_suggested
         .getData()
@@ -999,6 +1013,10 @@ export default {
       if (target.matches('[id^="doc-"]')) {
         const docId = target.id.split('-')[1];
         this.showDoc(docId);
+      }
+      if (target.matches('[id^="reanalyze-"]')) {
+        const docId = target.id.split('-')[1];
+        this.reanalyze(docId);
       }
     });
     this.$refs.table_suggested.$el.addEventListener('click', (event) => {
