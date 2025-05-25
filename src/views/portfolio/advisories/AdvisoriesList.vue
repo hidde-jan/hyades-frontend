@@ -35,21 +35,16 @@ export default {
     },
     apiUrl: function () {
       //TODO: find correct url
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/project/${this.uuid}`;
-      if (this.showSuppressedFindings === undefined) {
-        url += '?suppressed=false';
-      } else {
-        url += '?suppressed=' + this.showSuppressedFindings;
-      }
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}`;
       return url;
     },
     refreshTable: function () {
       //TODO uncomment when api url available
-     /* this.$refs.table_advisories.refresh({
+      this.$refs.table_advisories.refresh({
         url: this.apiUrl(),
         pageNumber: 1,
         silent: true,
-      });*/
+      });
     },
     reanalyze(adId) {
       console.log(`Reanalyzing advisory with ID: ${adId}`);
@@ -63,10 +58,12 @@ export default {
           title: 'Name',
           field: 'name',
           sortable: true,
-          formatter(value, row, index) {
-            let url = xssFilters.uriInUnQuotedAttr('../advisory/' + row.name);
+          /*formatter(value, row, index) {
+            let url = xssFilters.uriInUnQuotedAttr(
+              '../advisory/' + row.documentId,
+            );
             return `<a href="${url}">${xssFilters.inHTMLData(value)}</a>`;
-          },
+          },*/
         },
         {
           title: 'URL',
@@ -77,48 +74,23 @@ export default {
         },
         {
           title: 'Projects',
-          field: 'projects',
+          field: 'affectedProjects',
           sortable: true,
         },
         {
           title: 'Matches',
-          field: 'matches',
+          field: 'affectedComponents',
           sortable: true,
         },
-        {
+        /*{
           title: 'Actions',
           field: 'actions',
           formatter: (value, row) => {
             return `<button class="btn btn-primary" id="reanalyze-${row.name}"> <span class="fa fa-refresh"></span> Reanalyze </button>`;
           },
-        },
+        },*/
       ],
-      data: [
-        //TODO: delete when api is working
-        {
-          select: true,
-          name: 'Intevation GmbH',
-          url: 'https://intevation.de/.well-known/csaf/provider-metadata.json',
-          projects: 5,
-          matches: 3,
-        },
-        {
-          select: false,
-          name: 'CISA',
-          url: 'https://www.cisa.gov/sites/default/files/csaf/provider-metadata.jsona',
-          projects: 2,
-          matches: 1,
-        },
-        {
-          select: true,
-          name: 'Nazomine Networks',
-          url: 'https://csaf.data.security.nozominetworks.com/provider-metadata.json',
-          projects: 8,
-          matches: 4,
-          seen: false,
-          new: 'New',
-        },
-      ],
+      data: [],
       options: {
         search: true,
         showColumns: true,
@@ -134,25 +106,19 @@ export default {
         icons: {
           refresh: 'fa-refresh',
         },
-        onClickRow: this.handleRowClick,
+        //onClickRow: this.handleRowClick,
       },
     };
   },
   mounted() {
     this.refreshTable();
-    this.$refs.table_advisories.$el.addEventListener('click', (event) => {
+    /*this.$refs.table_advisories.$el.addEventListener('click', (event) => {
       const target = event.target;
       if (target.matches('[id^="reanalyze-"]')) {
         const adId = target.id.split('-')[1];
         this.reanalyze(adId);
       }
-    });
+    });*/
   },
 };
 </script>
-
-<style>
-.componentSearch .bootstrap-table .fixed-table-toolbar .bs-bars {
-  width: 80%;
-}
-</style>
