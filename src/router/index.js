@@ -307,7 +307,10 @@ function configRoutes() {
         {
           path: 'advisories/:advisoryId',
           name: 'Advisory',
-          alias: [],
+          alias: [
+            'advisories/:advisoryId/overview',
+            'advisories/:advisoryId/affectedProjects',
+          ],
           props: (route) => ({
             advisoryId: route.params.advisoryId,
           }),

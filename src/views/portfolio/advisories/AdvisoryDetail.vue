@@ -2,22 +2,25 @@
   <div class="animated fadeIn">
     <b-card :no-body="true">
       <b-card-body class="p-3 clearfix">
-        <div class="h5 mb-0 mt-2">{{ vulnLabel }}</div>
+        <div class="h5 mb-0 mt-2">{{ advisory.name }}</div>
       </b-card-body>
     </b-card>
 
     <b-tabs class="body-bg-color">
       <b-tab title="Overview">
-        <p>{{ overviewContent }}</p>
+        <h1>{{ advisory.name }}</h1>
+        <h2>{{ advisory.trackingID }}</h2>
+        <h3>{{ advisory.trackingVersion }}</h3>
+        <h4>{{ advisory.lastFetched }}</h4>
+        <p>{{ advisory.url }}</p>
       </b-tab>
       <b-tab title="Affected Projects">
         <bootstrap-table
           ref="table_projects"
           :columns="columns"
-          :data="data"
+          :data="affectedProjects"
           :options="options"
-        >
-        </bootstrap-table>
+        />
       </b-tab>
     </b-tabs>
   </div>
@@ -34,8 +37,6 @@ export default {
     return {
       advisoryId: null,
       advisory: {},
-      vulnLabel: this.id,
-      overviewContent: 'Some content',
       columns: [
         {
           title: 'Name',
@@ -66,34 +67,22 @@ export default {
         },
         {
           title: 'Version',
-          field: 'tag',
+          field: 'version',
           class: 'tight',
           sortable: true,
           width: '350px',
         },
         {
-          title: 'Active',
-          field: 'active',
-          formatter(value, row, index) {
+          title: 'Description',
+          field: 'desc',
+          /*formatter(value, row, index) {
             return value === true ? '<i class="fa fa-check-square-o" />' : '';
-          },
+          },*/
           align: 'center',
           sortable: true,
         },
       ],
-      data: [
-        //TODO: delete when api is working
-        {
-          name: 'Project A',
-          tag: '1',
-          active: true,
-        },
-        {
-          name: 'Project B',
-          tag: '1.3',
-          active: false,
-        },
-      ],
+      affectedProjects: [],
       options: {
         search: true,
         showColumns: true,
@@ -115,12 +104,7 @@ export default {
   methods: {
     apiUrl: function () {
       //TODO: find correct url
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/project/${this.uuid}`;
-      if (this.showSuppressedFindings === undefined) {
-        url += '?suppressed=false';
-      } else {
-        url += '?suppressed=' + this.showSuppressedFindings;
-      }
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/${this.advisoryId}`;
       return url;
     },
     initializeData: function () {
@@ -128,20 +112,19 @@ export default {
       //this.vulnId = decodeURIComponent(this.$route.params.advisoryId);
     },
     loadData: function () {
-      setTimeout(() => {
-        this.advisory = {
-          title: 'Hello Moto',
-        };
-        EventBus.$emit('addCrumb', this.advisory.title);
-        this.$title = this.advisory.title;
-      }, 1000);
+      this.axios.get(this.apiUrl()).then((response) => {
+        this.advisory = response.data.entity;
+        this.affectedProjects = response.data.affectedProjects;
+        EventBus.$emit('addCrumb', this.advisory.name);
+        this.$title = this.advisory.name;
+      });
     },
     routeTo(path) {
       if (path) {
         if (
           !this.$route.fullPath.toLowerCase.includes('/' + path.toLowerCase())
         ) {
-
+        // TODO enable tab routing
         }
       }
     },
