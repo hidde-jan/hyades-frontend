@@ -98,7 +98,7 @@ export default {
           permission: permissions.VIEW_PORTFOLIO,
         },
         {
-          name: this.$t('admin.advisories'),
+          name: this.$t('message.advisories'),
           url: '/advisories',
           icon: 'fa fa-info',
           permission: permissions.VIEW_PORTFOLIO,

@@ -58,12 +58,12 @@ export default {
           title: 'Name',
           field: 'name',
           sortable: true,
-          /*formatter(value, row, index) {
+          formatter(value, row, index) {
             let url = xssFilters.uriInUnQuotedAttr(
-              '../advisory/' + row.documentId,
+              '../advisories/' + encodeURIComponent(row.documentId),
             );
             return `<a href="${url}">${xssFilters.inHTMLData(value)}</a>`;
-          },*/
+          },
         },
         {
           title: 'URL',
