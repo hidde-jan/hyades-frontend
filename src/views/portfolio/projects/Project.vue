@@ -291,7 +291,7 @@
         @click="routeTo('advisories')"
       >
         <template v-slot:title>
-          <i class="fa fa-bell"></i> {{ $t('message.advisories') }}
+          <i class="fa fa-info"></i> {{ $t('message.advisories') }}
           <b-badge
             variant="tab-total"
             v-b-tooltip.hover
