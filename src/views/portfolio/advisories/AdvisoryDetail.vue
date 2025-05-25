@@ -25,35 +25,15 @@
 
 <script>
 import xssFilters from 'xss-filters';
+import EventBus from '../../../shared/eventbus';
+import { watch } from 'vue';
 
 export default {
-  props: ['id'],
-  mounted() {
-    console.log(this.id);
-    this.refreshTable();
-  },
-  methods: {
-    apiUrl: function () {
-      //TODO: find correct url
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/project/${this.uuid}`;
-      if (this.showSuppressedFindings === undefined) {
-        url += '?suppressed=false';
-      } else {
-        url += '?suppressed=' + this.showSuppressedFindings;
-      }
-      return url;
-    },
-    refreshTable: function () {
-      //TODO uncomment when api url available
-      /* this.$refs.table_advisories.refresh({
-         url: this.apiUrl(),
-         pageNumber: 1,
-         silent: true,
-       });*/
-    },
-  },
+  //props: ['advisoryId'],
   data() {
     return {
+      advisoryId: null,
+      advisory: {},
       vulnLabel: this.id,
       overviewContent: 'Some content',
       columns: [
@@ -61,7 +41,7 @@ export default {
           title: 'Name',
           field: 'name',
           sortable: true,
-          formatter: (value, row) => {
+          /*formatter: (value, row) => {
             const url = this.$router.resolve({
               name: 'Project Vulnerability Lookup',
               params: { uuid: row.uuid, vulnerability: this.vulnerability },
@@ -82,7 +62,7 @@ export default {
             }
 
             return html;
-          },
+          },*/
         },
         {
           title: 'Version',
@@ -131,6 +111,81 @@ export default {
         },
       },
     };
+  },
+  methods: {
+    apiUrl: function () {
+      //TODO: find correct url
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/project/${this.uuid}`;
+      if (this.showSuppressedFindings === undefined) {
+        url += '?suppressed=false';
+      } else {
+        url += '?suppressed=' + this.showSuppressedFindings;
+      }
+      return url;
+    },
+    initializeData: function () {
+      this.advisoryId = this.$route.params.advisoryId;
+      //this.vulnId = decodeURIComponent(this.$route.params.advisoryId);
+    },
+    loadData: function () {
+      setTimeout(() => {
+        this.advisory = {
+          title: 'Hello Moto',
+        };
+        EventBus.$emit('addCrumb', this.advisory.title);
+        this.$title = this.advisory.title;
+      }, 1000);
+    },
+    routeTo(path) {
+      if (path) {
+        if (
+          !this.$route.fullPath.toLowerCase.includes('/' + path.toLowerCase())
+        ) {
+
+        }
+      }
+    },
+  },
+  watch: {
+    '$route.params.advisoryId'(newValue) {
+      EventBus.$emit('crumble');
+      this.initializeData();
+      this.loadData();
+    },
+    $route() {
+      //this.getTabFromRoute().activate();
+    },
+  },
+  beforeMount() {
+    this.advisoryId = this.$route.params.advisoryId;
+    this.initializeData();
+  },
+  mounted() {
+    /*try {
+      if (this.$route.params.componentUuids) {
+        this.$refs.dependencygraph.active = true;
+      } else {
+        this.getTabFromRoute().active = true;
+      }
+    } catch (e) {
+      this.$toastr.e(this.$t('condition.forbidden'));
+      this.$router.replace({ path: '/projects/' + this.uuid });
+
+      // TODO activate appropriate tab this.$refs.overview.active = true;
+    }*/
+    //this.refreshTable();
+    this.loadData();
+  },
+  refreshTable: function () {
+    //TODO uncomment when api url available
+    /* this.$refs.table_advisories.refresh({
+         url: this.apiUrl(),
+         pageNumber: 1,
+         silent: true,
+       });*/
+  },
+  destroyed() {
+    EventBus.$emit('crumble');
   },
 };
 </script>

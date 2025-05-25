@@ -308,7 +308,9 @@ function configRoutes() {
           path: 'advisories/:advisoryId',
           name: 'Advisory',
           alias: [],
-          props: (route) => ({ advisoryId: route.params.advisoryId }),
+          props: (route) => ({
+            advisoryId: route.params.advisoryId,
+          }),
           component: AdvisoryDetail,
           meta: {
             i18n: 'message.advisories',
