@@ -58,20 +58,26 @@ export default {
           field: 'name',
           title: this.$t('message.advisory'),
           sortable: true,
+          formatter(value, row, index) {
+            let url = xssFilters.uriInUnQuotedAttr(
+              '../advisories/' + encodeURIComponent(row.documentId),
+            );
+            return `<a href="${url}">${xssFilters.inHTMLData(value)}</a>`;
+          },
         },
         {
           field: 'url',
           title: this.$t('message.analyzer'),
           sortable: true,
         },
-        {
+        /*{
           field: 'documentId',
           title: this.$t('message.matchpercentage'),
           sortable: true,
-        },
+        },*/
         {
           field: 'findingsPerDoc',
-          title: this.$t('message.analysis'),
+          title: this.$t('message.affected_components'),
           sortable: true,
         },
       ],
