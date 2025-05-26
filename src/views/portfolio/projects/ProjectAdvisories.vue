@@ -10,8 +10,8 @@
       <span class="fa fa-plus"></span>
       Add audit details
     </b-button>
+    <project-advisories-add-info-modal />
   </div>
-  <project-advisories-add-info-modal />
 </template>
 
 <script>
@@ -29,7 +29,7 @@ import bootstrapTableMixin from '@/mixins/bootstrapTableMixin';
 import permissionsMixin from '@/mixins/permissionsMixin';
 import FindingAudit from './FindingAudit';
 import ProjectUploadVexModal from './ProjectUploadVexModal';
-import projectAdvisoriesAddInfoModal from '@/views/portfolio/projects/projectAdvisoriesAddInfoModal.vue';
+import ProjectAdvisoriesAddInfoModal from './ProjectAdvisoriesAddInfoModal.vue';
 
 export default {
   props: {
@@ -39,7 +39,7 @@ export default {
   components: {
     cSwitch,
     ProjectUploadVexModal,
-    projectAdvisoriesAddInfoModal,
+    ProjectAdvisoriesAddInfoModal,
   },
   data() {
     return {
@@ -148,6 +148,7 @@ export default {
       console.log('click');
       const selectedRows = this.$refs.advisoriesTable.getSelections();
       if (selectedRows.length > 0) {
+        console.log('launching modal');
         this.$bvModal.show('projectAdvisoriesAddInfoModal', {
           props: {
             selectedRows: selectedRows,
