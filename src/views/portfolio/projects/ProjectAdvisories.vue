@@ -145,13 +145,12 @@ export default {
       });
     },
     handleSelected() {
-      console.log('click');
       const selectedRows = this.$refs.advisoriesTable.getSelections();
       if (selectedRows.length > 0) {
-        console.log('launching modal');
+        const ids = selectedRows.map(row => row.projectId);
         this.$bvModal.show('projectAdvisoriesAddInfoModal', {
           props: {
-            selectedRows: selectedRows,
+            ids: ids,
           },
         });
       } else {
