@@ -10,7 +10,7 @@
       <span class="fa fa-plus"></span>
       Add audit details
     </b-button>
-    <project-advisories-add-info-modal />
+    <project-advisories-add-info-modal :ids="rows" />
   </div>
 </template>
 
@@ -43,6 +43,7 @@ export default {
   },
   data() {
     return {
+      rows: [],
       showSuppressedFindings: this.showSuppressedFindings,
       labelIcon: {
         dataOn: '\u2713',
@@ -148,11 +149,8 @@ export default {
       const selectedRows = this.$refs.advisoriesTable.getSelections();
       if (selectedRows.length > 0) {
         const ids = selectedRows.map(row => row.projectId);
-        this.$bvModal.show('projectAdvisoriesAddInfoModal', {
-          props: {
-            ids: ids,
-          },
-        });
+        this.rows = ids;
+        this.$bvModal.show('projectAdvisoriesAddInfoModal');
       } else {
         alert('Select at least one row');
       }

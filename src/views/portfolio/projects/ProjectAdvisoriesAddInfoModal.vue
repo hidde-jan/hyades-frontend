@@ -51,7 +51,6 @@ export default {
   props: {
     ids: {
       type: Array,
-      required: true,
     },
   },
   components: {
@@ -73,14 +72,21 @@ export default {
   },
   methods: {
     save() {
-      const payload = {
-        ids: this.ids,
-        status: this.selectedStatus,
-        comment: this.comment,
-        //TODO: send to api
-      };
-
-      console.log('Data to be sent:', payload);
+      const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;  // TODO: Update URL
+      this.ids.forEach((element, index) => {
+        this.axios
+          .put(url, {
+            projectId: element,
+            status: this.selectedStatus,
+            comment: this.comment,
+          })
+          .then((response) => {
+            this.$toastr.s(this.$t('message.updated'));
+          })
+          .catch((error) => {
+            this.$toastr.w(this.$t('condition.unsuccessful_action'));
+          });
+      });
       this.$bvModal.hide('projectAdvisoriesAddInfoModal');
     },
     close() {
