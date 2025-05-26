@@ -6,15 +6,12 @@
       :data="data"
       :options="options"
     />
-    <b-button
-      size="md"
-      variant="outline-primary"
-      @click="handleSelected"
-    >
+    <b-button size="md" variant="outline-primary" @click="handleSelected">
       <span class="fa fa-plus"></span>
       Add audit details
     </b-button>
   </div>
+  <project-advisories-add-info-modal />
 </template>
 
 <script>
@@ -32,6 +29,7 @@ import bootstrapTableMixin from '@/mixins/bootstrapTableMixin';
 import permissionsMixin from '@/mixins/permissionsMixin';
 import FindingAudit from './FindingAudit';
 import ProjectUploadVexModal from './ProjectUploadVexModal';
+import projectAdvisoriesAddInfoModal from '@/views/portfolio/projects/projectAdvisoriesAddInfoModal.vue';
 
 export default {
   props: {
@@ -41,6 +39,7 @@ export default {
   components: {
     cSwitch,
     ProjectUploadVexModal,
+    projectAdvisoriesAddInfoModal,
   },
   data() {
     return {
@@ -140,9 +139,16 @@ export default {
       });
     },
     handleSelected() {
+      console.log('click');
       const selectedRows = this.$refs.advisoriesTable.getSelections();
       if (selectedRows.length > 0) {
-        //TODO: open modal with selected as props
+        this.$bvModal.show('projectAdvisoriesAddInfoModal', {
+          props: {
+            selectedRows: selectedRows,
+          },
+        });
+      } else {
+        alert('Select at least one row');
       }
     },
   },
