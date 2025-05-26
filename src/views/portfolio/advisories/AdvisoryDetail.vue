@@ -13,6 +13,8 @@
         <h3>{{ advisory.trackingVersion }}</h3>
         <h4>{{ advisory.lastFetched }}</h4>
         <p>{{ advisory.url }}</p>
+        <h2>Matches: {{nMatches}}</h2>
+        <h2>With status set: {{nStatus}}</h2>
       </b-tab>
       <b-tab title="Affected Projects">
         <bootstrap-table
@@ -35,6 +37,8 @@ export default {
   //props: ['advisoryId'],
   data() {
     return {
+      nMatches: 0,
+      nStatus: 0,
       advisoryId: null,
       advisory: {},
       columns: [
@@ -86,6 +90,11 @@ export default {
     };
   },
   methods: {
+    getStats() {
+      // TODO: get stats from API
+      this.nMatches =0;
+      this.nStatus =0;
+    },
     apiUrl: function () {
       //TODO: find correct url
       let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/${this.advisoryId}`;
@@ -142,6 +151,7 @@ export default {
     }*/
     //this.refreshTable();
     this.loadData();
+    this.getStats();
   },
   refreshTable: function () {
     //TODO uncomment when api url available
