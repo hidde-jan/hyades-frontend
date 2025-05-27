@@ -107,6 +107,8 @@ export default {
     loadData: function () {
       this.axios.get(this.apiUrl()).then((response) => {
         this.advisory = response.data.entity;
+        this.nMatches = response.data.findingsTotal;
+        this.nStatus = response.data.findingsMarked;
         this.affectedProjects = response.data.affectedProjects;
         EventBus.$emit('addCrumb', this.advisory.name);
         this.$title = this.advisory.name;
