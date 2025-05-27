@@ -101,13 +101,13 @@ export default {
         detailViewIcon: true,
         detailViewByClick: false,
         detailFormatter: (index, row) => {
-          console.log("calling with "+row.projectId+" doc "+row.documentId);
           return (
             row &&
             this.vueFormatter({
               i18n,
               propsData: {
                 row: row,
+                projectUuid: this.uuid,
               },
               ...ProjectAdvisory,
             })

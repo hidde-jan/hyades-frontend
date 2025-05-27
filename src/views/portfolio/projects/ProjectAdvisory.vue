@@ -18,19 +18,29 @@ import i18n from '@/i18n';
 export default {
   props: {
     row: Object,
+    projectUuid: String,
   },
   data() {
     return {
       taColumns: [
         {
           title: 'Component',
-          field: 'component',
+          field: 'name',
           sortable: true,
-          formatter(value, row, index) {
+          formatter: (value, row, index) => {
             let url = xssFilters.uriInUnQuotedAttr(
-              '../advisories/' + encodeURIComponent(row.documentId),
+              '../../../components/' + row.componentUuid,
             );
-            return `<a href="${url}">${xssFilters.inHTMLData(value)}</a>`;
+            let dependencyGraphUrl = xssFilters.uriInUnQuotedAttr(
+              '../../../projects/' +
+                this.projectUuid +
+                '/dependencyGraph/' +
+                row.componentUuid,
+            );
+            return (
+              `<a href="${dependencyGraphUrl}"<i class="fa fa-sitemap" aria-hidden="true" style="float:right; padding-top: 4px; cursor:pointer" data-toggle="tooltip" data-placement="bottom" title="Show in dependency graph"></i></a> ` +
+              `<a href="${url}">${xssFilters.inHTMLData(value)}</a>`
+            );
           },
         },
         {
@@ -49,19 +59,12 @@ export default {
           field: 'confidence',
           sortable: true,
         },
-        {
+        /*{
           title: 'Vulnerability',
           field: 'vulnerability',
-        },
+        },*/
       ],
-      taData: [
-        {
-          component: 'Sample component',
-          version: 'example.com',
-          group: '42',
-          confidence: '80%',
-        },
-      ],
+      taData: [],
       taOptions: {
         search: false,
         showColumns: true,
@@ -77,7 +80,7 @@ export default {
         icons: {
           refresh: 'fa-refresh',
         },
-        detailView: true,
+        /*detailView: true,
         detailViewIcon: true,
         detailViewByClick: false,
         detailFormatter: (index, row) => {
@@ -93,7 +96,7 @@ export default {
             })
           );
         },
-        onExpandRow: this.vueFormatterInit,
+        onExpandRow: this.vueFormatterInit,*/
       },
     };
   },
@@ -105,7 +108,6 @@ export default {
       return url;
     },
     refreshTable: function () {
-      console.log("attempting retrieval of "+this.apiUrl());
       this.$refs.tableAdvisoryFindings.refresh({
         url: this.apiUrl(),
         pageNumber: 1,
@@ -113,9 +115,7 @@ export default {
       });
     },
   },
-  beforeMount() {},
   mounted() {
-    console.log("mounting with "+this.row.projectId+" advisory "+this.row.documentId)
     this.refreshTable();
   },
   components: {
