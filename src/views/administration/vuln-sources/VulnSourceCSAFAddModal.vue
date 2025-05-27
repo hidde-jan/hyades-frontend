@@ -16,11 +16,14 @@
     />
     <b-validated-input-group-form-input
       id="url"
+      ref="urlField"
       :label="$t('admin.url')"
       input-group-size="mb-3"
       rules="required|domainOrUrl"
       type="url"
       v-model="url"
+      v-debounce:750ms="validateInput"
+      :debounce-events="'keyup'"
     />
     <div>
       <c-switch color="primary" v-model="enabled" label v-bind="labelIcon" />{{
@@ -75,6 +78,10 @@ export default {
     };
   },
   methods: {
+    validateInput(event) {
+      console.log("change event called "+event)
+      // TODO trigger validation after debounce event
+    },
     createCsafSource: function () {
       let url ='';
       const title = this.modalTitle;
