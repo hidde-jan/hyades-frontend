@@ -27,9 +27,9 @@ import {
 } from '@/shared/utils';
 import bootstrapTableMixin from '@/mixins/bootstrapTableMixin';
 import permissionsMixin from '@/mixins/permissionsMixin';
-import FindingAudit from './FindingAudit';
 import ProjectUploadVexModal from './ProjectUploadVexModal';
 import ProjectAdvisoriesAddInfoModal from './ProjectAdvisoriesAddInfoModal.vue';
+import ProjectAdvisory from './ProjectAdvisory.vue';
 
 export default {
   props: {
@@ -100,20 +100,21 @@ export default {
         detailView: true,
         detailViewIcon: true,
         detailViewByClick: false,
-        /* detailFormatter: (index, row) => {
+        detailFormatter: (index, row) => {
+          console.log("calling with "+row.projectId+" doc "+row.documentId);
           return (
             row &&
             this.vueFormatter({
               i18n,
               propsData: {
-                finding: row,
-                projectUuid: this.uuid,
+                projectId: row.projectId,
+                documentId: row.documentId,
               },
-              ...FindingAudit,
+              ...ProjectAdvisory,
             })
           );
         },
-        onExpandRow: this.vueFormatterInit, */
+        onExpandRow: this.vueFormatterInit,
       },
     };
   },
