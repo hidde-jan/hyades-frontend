@@ -17,8 +17,7 @@ import i18n from '@/i18n';
 
 export default {
   props: {
-    projectId: String,
-    documentId: String,
+    row: Object,
   },
   data() {
     return {
@@ -102,7 +101,7 @@ export default {
   mixins: [permissionsMixin],
   methods: {
     apiUrl: function () {
-      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/project/${this.projectId}/advisory/${this.documentId}`;
+      let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/project/${this.row.projectId}/advisory/${this.row.documentId}`;
       return url;
     },
     refreshTable: function () {
@@ -116,7 +115,7 @@ export default {
   },
   beforeMount() {},
   mounted() {
-    console.log("mounting with "+this.projectId)
+    console.log("mounting with "+this.row.projectId+" advisory "+this.row.documentId)
     this.refreshTable();
   },
   components: {

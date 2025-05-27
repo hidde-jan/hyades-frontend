@@ -107,8 +107,7 @@ export default {
             this.vueFormatter({
               i18n,
               propsData: {
-                projectId: row.projectId,
-                documentId: row.documentId,
+                row: row,
               },
               ...ProjectAdvisory,
             })
