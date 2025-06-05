@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     save() {
-      const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`;  // TODO: Update URL
+      const url = `${this.$api.BASE_URL}/${this.$api.URL_CSAF_AGGREGATOR}`; // TODO: Update URL
       this.ids.forEach((element, index) => {
         this.axios
           .put(url, {

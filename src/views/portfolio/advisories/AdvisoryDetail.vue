@@ -31,10 +31,8 @@
 <script>
 import xssFilters from 'xss-filters';
 import EventBus from '../../../shared/eventbus';
-import { watch } from 'vue';
 
 export default {
-  //props: ['advisoryId'],
   data() {
     return {
       nMatches: 0,
@@ -63,9 +61,6 @@ export default {
         {
           title: 'Description',
           field: 'desc',
-          /*formatter(value, row, index) {
-            return value === true ? '<i class="fa fa-check-square-o" />' : '';
-          },*/
           align: 'center',
           sortable: true,
         },
@@ -90,11 +85,6 @@ export default {
     };
   },
   methods: {
-    getStats() {
-      // TODO: get stats from API
-      this.nMatches =0;
-      this.nStatus =0;
-    },
     apiUrl: function () {
       //TODO: find correct url
       let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/${this.advisoryId}`;
@@ -157,7 +147,7 @@ export default {
   },
   refreshTable: function () {
     //TODO uncomment when api url available
-    /* this.$refs.table_advisories.refresh({
+    /* this.$refs.table_projects.refresh({
          url: this.apiUrl(),
          pageNumber: 1,
          silent: true,

@@ -39,16 +39,11 @@ export default {
       return url;
     },
     refreshTable: function () {
-      //TODO uncomment when api url available
       this.$refs.table_advisories.refresh({
         url: this.apiUrl(),
         pageNumber: 1,
         silent: true,
       });
-    },
-    reanalyze(adId) {
-      console.log(`Reanalyzing advisory with ID: ${adId}`);
-      //TODO: Add api call
     },
   },
   data() {
@@ -82,13 +77,6 @@ export default {
           field: 'affectedComponents',
           sortable: true,
         },
-        /*{
-          title: 'Actions',
-          field: 'actions',
-          formatter: (value, row) => {
-            return `<button class="btn btn-primary" id="reanalyze-${row.name}"> <span class="fa fa-refresh"></span> Reanalyze </button>`;
-          },
-        },*/
       ],
       data: [],
       options: {
@@ -106,7 +94,6 @@ export default {
         icons: {
           refresh: 'fa-refresh',
         },
-        //onClickRow: this.handleRowClick,
       },
     };
   },
@@ -114,10 +101,6 @@ export default {
     this.refreshTable();
     /*this.$refs.table_advisories.$el.addEventListener('click', (event) => {
       const target = event.target;
-      if (target.matches('[id^="reanalyze-"]')) {
-        const adId = target.id.split('-')[1];
-        this.reanalyze(adId);
-      }
     });*/
   },
 };

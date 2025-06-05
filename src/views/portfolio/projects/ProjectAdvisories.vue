@@ -16,15 +16,8 @@
 
 <script>
 import { Switch as cSwitch } from '@coreui/vue';
-import $ from 'jquery';
 import xssFilters from 'xss-filters';
-
-import common from '@/shared/common';
 import i18n from '@/i18n';
-import {
-  compareVersions,
-  loadUserPreferencesForBootstrapTable,
-} from '@/shared/utils';
 import bootstrapTableMixin from '@/mixins/bootstrapTableMixin';
 import permissionsMixin from '@/mixins/permissionsMixin';
 import ProjectUploadVexModal from './ProjectUploadVexModal';
