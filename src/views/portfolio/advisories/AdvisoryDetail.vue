@@ -33,34 +33,39 @@
               <a :href="advisory.url" target="_blank">{{ advisory.url }}</a>
             </td>
           </tr>
-          <tr>
-            <th>Matches</th>
-            <td>{{ nMatches }}</td>
-          </tr>
-          <tr>
-            <th>With status set</th>
-            <td>
-              <div style="display: flex; align-items: center">
-                <span>{{ nStatus }}</span>
-                <div
-                  style="
-                    width: 100%;
-                    background-color: #e0e0e0;
-                    margin-left: 10px;
-                  "
-                >
-                  <div
-                    :style="{
-                      width: (nStatus / nMatches) * 100 + '%',
-                      backgroundColor: '#4caf50',
-                      height: '20px',
-                    }"
-                  ></div>
-                </div>
-              </div>
-            </td>
-          </tr>
         </table>
+        <b-card title="Publisher">
+          <table>
+            <tr>
+              <th>Name</th>
+              <td>
+                {{ doc.document.publisher.name }}
+              </td>
+            </tr>
+            <tr>
+              <th>Namespace</th>
+              <td>
+                {{ doc.document.publisher.namespace }}
+              </td>
+            </tr>
+            <tr>
+              <th>Category</th>
+              <td>
+                {{ doc.document.publisher.category }}
+              </td>
+            </tr>
+          </table>
+        </b-card>
+        <b-card
+          :title="value.category"
+          v-for="(value, key) in doc.document.notes"
+          :key="key"
+        >
+          <b-card-text>
+            {{ value.text }}
+          </b-card-text>
+        </b-card>
+        <pre>{{ JSON.stringify(doc, null, 2) }}</pre>
       </b-tab>
       <b-tab title="Affected Projects">
         <bootstrap-table
@@ -69,6 +74,17 @@
           :data="affectedProjects"
           :options="options"
         />
+      </b-tab>
+      <b-tab title="Document History">
+        <b-card
+          :title="value.date"
+          v-for="(value, key) in doc.document.tracking.revision_history"
+          :key="key"
+        >
+          <b-card-text>
+            {{ value.summary }}
+          </b-card-text>
+        </b-card>
       </b-tab>
     </b-tabs>
   </div>
@@ -85,6 +101,7 @@ export default {
       nStatus: 0,
       advisoryId: null,
       advisory: {},
+      doc: {},
       columns: [
         {
           title: 'Name',
@@ -149,6 +166,7 @@ export default {
         this.advisory = response.data.entity;
         this.nMatches = response.data.findingsTotal;
         this.nStatus = response.data.findingsMarked;
+        this.doc = JSON.parse(response.data.entity.content);
         this.affectedProjects = response.data.affectedProjects;
         EventBus.$emit('addCrumb', this.advisory.name);
         this.$title = this.advisory.name;
