@@ -8,13 +8,59 @@
 
     <b-tabs class="body-bg-color">
       <b-tab title="Overview">
-        <h1>{{ advisory.name }}</h1>
-        <h2>{{ advisory.trackingID }}</h2>
-        <h3>{{ advisory.trackingVersion }}</h3>
-        <h4>{{ advisory.lastFetched }}</h4>
-        <p>{{ advisory.url }}</p>
-        <h2>Matches: {{nMatches}}</h2>
-        <h2>With status set: {{nStatus}}</h2>
+        <table>
+          <tr>
+            <th>Name</th>
+            <td>
+              {{ advisory.name }}
+            </td>
+          </tr>
+          <tr>
+            <th>Tracking ID</th>
+            <td>{{ advisory.trackingID }}</td>
+          </tr>
+          <tr>
+            <th>Version</th>
+            <td>{{ advisory.trackingVersion }}</td>
+          </tr>
+          <tr>
+            <th>Last Fetched</th>
+            <td>{{ formatDate(advisory.lastFetched) }}</td>
+          </tr>
+          <tr>
+            <th>URL</th>
+            <td>
+              <a :href="advisory.url" target="_blank">{{ advisory.url }}</a>
+            </td>
+          </tr>
+          <tr>
+            <th>Matches</th>
+            <td>{{ nMatches }}</td>
+          </tr>
+          <tr>
+            <th>With status set</th>
+            <td>
+              <div style="display: flex; align-items: center">
+                <span>{{ nStatus }}</span>
+                <div
+                  style="
+                    width: 100%;
+                    background-color: #e0e0e0;
+                    margin-left: 10px;
+                  "
+                >
+                  <div
+                    :style="{
+                      width: (nStatus / nMatches) * 100 + '%',
+                      backgroundColor: '#4caf50',
+                      height: '20px',
+                    }"
+                  ></div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
       </b-tab>
       <b-tab title="Affected Projects">
         <bootstrap-table
@@ -85,6 +131,10 @@ export default {
     };
   },
   methods: {
+    formatDate(value) {
+      const date = new Date(value * 1000);
+      return date.toLocaleString();
+    },
     apiUrl: function () {
       //TODO: find correct url
       let url = `${this.$api.BASE_URL}/${this.$api.URL_ADVISORIES}/${this.advisoryId}`;
@@ -109,7 +159,7 @@ export default {
         if (
           !this.$route.fullPath.toLowerCase.includes('/' + path.toLowerCase())
         ) {
-        // TODO enable tab routing
+          // TODO enable tab routing
         }
       }
     },
