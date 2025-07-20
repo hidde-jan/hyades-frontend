@@ -55,6 +55,9 @@ export default {
           title: 'Confidence',
           field: 'confidence',
           sortable: true,
+          formatter: (cell) => {
+            return `${(cell * 100).toFixed(0)}%`;
+          },
         },
         /*{
           title: 'Vulnerability',
