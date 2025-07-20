@@ -6,11 +6,11 @@
       :data="data"
       :options="options"
     />
-    <b-button size="md" variant="outline-primary" @click="handleSelected">
+    <!--<b-button size="md" variant="outline-primary" @click="handleSelected">
       <span class="fa fa-plus"></span>
       Add audit details
     </b-button>
-    <project-advisories-add-info-modal :ids="rows" />
+    <project-advisories-add-info-modal :ids="rows" />-->
   </div>
 </template>
 
@@ -43,11 +43,11 @@ export default {
         dataOff: '\u2715',
       },
       columns: [
-        {
+        /*{
           title: 'Select',
           field: 'select',
           checkbox: true,
-        },
+        },*/
         {
           field: 'name',
           title: this.$t('message.advisory'),

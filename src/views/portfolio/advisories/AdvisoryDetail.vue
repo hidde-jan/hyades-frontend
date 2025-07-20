@@ -8,32 +8,34 @@
 
     <b-tabs class="body-bg-color">
       <b-tab title="Overview">
-        <table>
-          <tr>
-            <th>Name</th>
-            <td>
-              {{ advisory.name }}
-            </td>
-          </tr>
-          <tr>
-            <th>Tracking ID</th>
-            <td>{{ advisory.trackingID }}</td>
-          </tr>
-          <tr>
-            <th>Version</th>
-            <td>{{ advisory.trackingVersion }}</td>
-          </tr>
-          <tr>
-            <th>Last Fetched</th>
-            <td>{{ formatDate(advisory.lastFetched) }}</td>
-          </tr>
-          <tr>
-            <th>URL</th>
-            <td>
-              <a :href="advisory.url" target="_blank">{{ advisory.url }}</a>
-            </td>
-          </tr>
-        </table>
+        <b-card>
+          <table>
+            <tr>
+              <th>Name</th>
+              <td>
+                {{ advisory.name }}
+              </td>
+            </tr>
+            <tr>
+              <th>Tracking ID</th>
+              <td>{{ advisory.trackingID }}</td>
+            </tr>
+            <tr>
+              <th>Version</th>
+              <td>{{ advisory.trackingVersion }}</td>
+            </tr>
+            <tr>
+              <th>Last Fetched</th>
+              <td>{{ formatDate(advisory.lastFetched) }}</td>
+            </tr>
+            <tr>
+              <th>URL</th>
+              <td>
+                <a :href="advisory.url" target="_blank">{{ advisory.url }}</a>
+              </td>
+            </tr>
+          </table>
+        </b-card>
         <b-card title="Publisher">
           <table>
             <tr>
@@ -70,8 +72,16 @@
       <b-tab title="Affected Projects">
         <bootstrap-table
           ref="table_projects"
-          :columns="columns"
+          :columns="projectsColumns"
           :data="affectedProjects"
+          :options="options"
+        />
+      </b-tab>
+      <b-tab title="Vulnerabilities">
+        <bootstrap-table
+          ref="table_vulnerabilities"
+          :columns="vulnerabilitiesColumns"
+          :data="vulnerabilities"
           :options="options"
         />
       </b-tab>
@@ -102,7 +112,7 @@ export default {
       advisoryId: null,
       advisory: {},
       doc: {},
-      columns: [
+      projectsColumns: [
         {
           title: 'Name',
           field: 'name',
@@ -128,7 +138,34 @@ export default {
           sortable: true,
         },
       ],
+      vulnerabilitiesColumns: [
+        {
+          title: 'ID',
+          field: 'vulnId',
+          sortable: true,
+          formatter(value, row, index) {
+            let url = xssFilters.uriInUnQuotedAttr(
+              '../vulnerabilities/' + row.source + '/' + row.vulnId,
+            );
+            return `<a href="${url}">${xssFilters.inHTMLData(value)}</a>`;
+          },
+        },
+        {
+          title: 'Version',
+          field: 'version',
+          class: 'tight',
+          sortable: true,
+          width: '350px',
+        },
+        {
+          title: 'Description',
+          field: 'desc',
+          align: 'center',
+          sortable: true,
+        },
+      ],
       affectedProjects: [],
+      vulnerabilities: [],
       options: {
         search: true,
         showColumns: true,
@@ -168,6 +205,7 @@ export default {
         this.nStatus = response.data.findingsMarked;
         this.doc = JSON.parse(response.data.entity.content);
         this.affectedProjects = response.data.affectedProjects;
+        this.vulnerabilities = response.data.vulnerabilities;
         EventBus.$emit('addCrumb', this.advisory.name);
         this.$title = this.advisory.name;
       });
