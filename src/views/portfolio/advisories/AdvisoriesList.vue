@@ -80,19 +80,32 @@ export default {
       ],
       data: [],
       options: {
-        search: true,
+        search: false,
         showColumns: true,
         showRefresh: true,
         pagination: true,
-        sidePagination: 'client',
+        sidePagination: 'server',
         queryParamsType: 'pageSize',
         pageList: '[10, 25, 50, 100]',
-        pageSize: 10,
+        pageSize:
+          localStorage && localStorage.getItem('AdvisoryListPageSize') !== null
+            ? Number(localStorage.getItem('AdvisoryListPageSize'))
+            : 10,
         silentSort: false,
         sortName: 'name',
         sortOrder: 'asc',
         icons: {
           refresh: 'fa-refresh',
+        },
+        responseHandler: function (res, xhr) {
+          res.total = xhr.getResponseHeader('X-Total-Count');
+          return res;
+        },
+        url: this.apiUrl(),
+        onPageChange: (number, size) => {
+          if (localStorage) {
+            localStorage.setItem('AdvisoryListPageSize', size.toString());
+          }
         },
       },
     };

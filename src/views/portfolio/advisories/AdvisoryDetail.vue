@@ -59,7 +59,7 @@
           </table>
         </b-card>
         <b-card
-          :title="value.category"
+          :title="value.title || value.category"
           v-for="(value, key) in doc.document.notes"
           :key="key"
         >
