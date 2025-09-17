@@ -87,7 +87,7 @@ jobs:
       - name: Set Container Tags
         id: tags
         run: |-
-          IMAGE_NAME="ghcr.io/dependencytrack/hyades-frontend"
+          IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/hyades-frontend"
           REF_NAME="${{ inputs.ref-name }}"
           TAGS=""
 
